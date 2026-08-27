@@ -1537,12 +1537,12 @@ function renderSvList(){
     projWrap.innerHTML=`<div class="proj-row">
       <div class="proj-row-arrow">↑</div>
       <div class="proj-income-side">
-        <div class="proj-income-lbl">Projected Income</div>
+        <div class="proj-income-lbl">Income (Est. | Actual)</div>
         <div class="proj-income-amt">${fmt(projAmt)}<span class="proj-income-pencil" onclick="openProjSheet()" title="Edit projected income"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></span></div>
       </div>
       <div class="proj-row-divider"></div>
       <div class="proj-bal-side">
-        <div class="proj-bal-lbl">Net</div>
+        <div class="proj-bal-lbl">Net | Balance</div>
         <span class="proj-bal-pill ${cls}">${arrow} ${fmt(Math.abs(bal))} <span style="opacity:.7;font-size:11px;">${savRate}%</span></span>
       </div>
     </div>`;
@@ -1601,8 +1601,8 @@ function renderMonths(){
         <div class="manage-item-left">
           <div class="manage-item-month">${m.month}${isCurrent?'<span class="current-badge">Current</span>':''}${isLocked?'<span class="locked-badge">🔒 Locked</span>':''}</div>
           <div class="manage-item-stats">
-            <div><div class="manage-stat-label">Mid Net</div><div class="manage-stat" style="color:${nm>=0?'var(--green)':'var(--red)'}">${fmt(nm)}</div></div>
-            <div><div class="manage-stat-label">End Net</div><div class="manage-stat" style="color:${ne>=0?'var(--green)':'var(--red)'}">${fmt(ne)}</div></div>
+            <div><div class="manage-stat-label">Net(Mid)</div><div class="manage-stat" style="color:${nm>=0?'var(--green)':'var(--red)'}">${fmt(nm)}</div></div>
+            <div><div class="manage-stat-label">Net(End)</div><div class="manage-stat" style="color:${ne>=0?'var(--green)':'var(--red)'}">${fmt(ne)}</div></div>
           </div>
         </div>
         <div class="manage-item-actions">
@@ -1751,7 +1751,7 @@ function renderSummary(){
     </div>
 
     ${months.length>1?`<div class="sum-section">
-      <div class="sum-section-label">Net Pay | Mid + End</div>
+      <div class="sum-section-label">Net/Balance Per Month</div>
       <div class="mini-bar-list">${barRows}</div>
     </div>`:''}
 
