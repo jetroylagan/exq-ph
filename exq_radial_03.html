@@ -30,7 +30,7 @@
   --amber:#fb923c; --amber-soft:rgba(251,146,60,.13);
   --purple:#818cf8; --purple-soft:rgba(129,140,248,.12);
   --text:#effef8; --text2:#9fd9c2; --muted:#3d8060; --dim:#4a9878;
-  --radius:16px; --radius-sm:10px; --nav-h:68px; --header-h:56px;
+  --radius:16px; --radius-sm:10px; --nav-h:80px; --header-h:56px;
   --sidebar-w:200px; color-scheme:dark;
 }
 /* ── THEMES ─────────────────────────────────── */
@@ -147,8 +147,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px 0;color:var(--muted);transition:color .15s;position:relative;}
 .nav-item.active{color:var(--accent);}
 .nav-item.active::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:28px;height:2px;background:var(--accent);border-radius:0 0 2px 2px;}
-.nav-icon{width:22px;height:22px;display:flex;align-items:center;justify-content:center;}
-.nav-label{font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;}
+.nav-icon{width:28px;height:28px;display:flex;align-items:center;justify-content:center;}
+.nav-label{font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;}
 .sidebar-logo{display:none;}
 
 /* ── DESKTOP SIDEBAR (700px+) ──────────────── */
@@ -345,8 +345,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .proj-row-arrow{width:30px;height:30px;border-radius:9px;background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.2);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--green);flex-shrink:0;}
 .proj-income-side{flex:1;display:flex;flex-direction:column;gap:2px;}
 .proj-income-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--dim);}
-.proj-income-amt{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:800;color:var(--text);line-height:1.2;}
-.proj-income-pencil{font-size:16px;color:var(--dim);opacity:.6;display:inline-block;transform:rotate(-45deg);margin-left:6px;vertical-align:middle;cursor:pointer;transition:opacity .15s;}
+.proj-income-amt{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:800;color:var(--text);line-height:1.2;display:flex;align-items:center;gap:8px;}
+.proj-income-pencil{font-size:20px;color:var(--dim);opacity:.6;display:inline-block;transform:rotate(-45deg);cursor:pointer;transition:opacity .15s;}
 .proj-income-pencil:hover{opacity:1;}
 .proj-income-savrate{font-size:10px;font-weight:700;color:var(--green);}
 .proj-row-divider{width:1px;height:52px;background:var(--border);flex-shrink:0;}
