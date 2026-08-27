@@ -761,14 +761,6 @@ input[type=file]{display:none;}
           <div class="ts-preview" style="background:#0c0b1a"><div class="ts-card" style="background:#121028"></div><div class="ts-accent" style="background:#a78bfa"></div></div>
           <span>Midnight</span>
         </button>
-        <!-- <button class="theme-swatch" data-theme="ember" onclick="setTheme('ember')">
-          <div class="ts-preview" style="background:#120a01"><div class="ts-card" style="background:#1e1202"></div><div class="ts-accent" style="background:#f59e0b"></div></div>
-          <span>Ember</span>
-        </button> -->
-        <!-- <button class="theme-swatch" data-theme="violet" onclick="setTheme('violet')">
-          <div class="ts-preview" style="background:#f5f3ff;border:1px solid #ddd6fe"><div class="ts-card" style="background:#e8e2ff"></div><div class="ts-accent" style="background:#7c3aed"></div></div>
-          <span>Violet</span>
-        </button> -->
       </div>
 
       <!-- Category management -->
@@ -1545,12 +1537,12 @@ function renderSvList(){
     projWrap.innerHTML=`<div class="proj-row">
       <div class="proj-row-arrow">↑</div>
       <div class="proj-income-side">
-        <div class="proj-income-lbl">Income</div>
-        <div class="proj-income-amt">${fmt(projAmt)}<span class="proj-income-pencil" onclick="openProjSheet()" title="Edit income"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></span></div>
+        <div class="proj-income-lbl">Projected Income</div>
+        <div class="proj-income-amt">${fmt(projAmt)}<span class="proj-income-pencil" onclick="openProjSheet()" title="Edit projected income"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></span></div>
       </div>
       <div class="proj-row-divider"></div>
       <div class="proj-bal-side">
-        <div class="proj-bal-lbl">Balance</div>
+        <div class="proj-bal-lbl">Net</div>
         <span class="proj-bal-pill ${cls}">${arrow} ${fmt(Math.abs(bal))} <span style="opacity:.7;font-size:11px;">${savRate}%</span></span>
       </div>
     </div>`;
