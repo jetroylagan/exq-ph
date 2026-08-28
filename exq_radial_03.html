@@ -196,7 +196,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 }
 
 /* ── SHARED ────────────────────────────────── */
-.section-label{font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);}
+.section-label{font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);}
 .pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
 .pill-green{background:var(--green-soft);color:var(--green);}
 .pill-red{background:var(--red-soft);color:var(--red);}
@@ -327,11 +327,11 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .exp-item:active{background:rgba(6,182,212,.07);}
 .exp-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .exp-info{flex:1;min-width:0;}
-.exp-name{font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:5px;}
+.exp-name{font-size:13px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:5px;}
 .exp-bar-track{height:6px;background:var(--card2);border-radius:4px;overflow:hidden;}
 .exp-bar-fill{height:6px;border-radius:4px;transition:width .35s ease;}
 .exp-right{text-align:right;flex-shrink:0;}
-.exp-amt{font-size:16px;font-weight:700;font-family:'JetBrains Mono',monospace;}
+.exp-amt{font-size:13px;font-weight:800;font-family:'JetBrains Mono',monospace;}
 .exp-pct{font-size:13px;color:var(--muted);margin-top:2px;font-family:'JetBrains Mono',monospace;}
 .exp-notes{font-size:13px;color:var(--dim);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .exp-empty{padding:16px;font-size:15px;color:var(--muted);text-align:center;}
@@ -344,15 +344,19 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 }
 .proj-row-arrow{width:30px;height:30px;border-radius:9px;background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.2);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--green);flex-shrink:0;}
 .proj-income-side{flex:1;display:flex;flex-direction:column;gap:2px;}
-.proj-income-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--dim);}
-.proj-income-amt{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:800;color:var(--text);line-height:1.2;display:flex;align-items:center;gap:8px;}
+.proj-income-lbl{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--dim);}
+.proj-income-amt{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:800;color:var(--text);line-height:1.2;display:flex;align-items:center;gap:8px;}
 .proj-income-pencil{width:20px;height:20px;color:var(--dim);opacity:.65;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:opacity .15s;flex-shrink:0;}
 .proj-income-pencil:hover{opacity:1;}
+.proj-income-pill{display:inline-flex;align-items:center;gap:7px;padding:4px 10px;border-radius:20px;background:var(--card3);border:1px solid var(--border2);color:var(--text2);font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:800;cursor:pointer;transition:background .15s;width:fit-content;margin-top:2px;}
+.proj-income-pill:hover{background:var(--border);}
+.proj-income-pill svg{opacity:.7;flex-shrink:0;transition:opacity .15s;}
+.proj-income-pill:hover svg{opacity:1;}
 .proj-income-savrate{font-size:10px;font-weight:700;color:var(--green);}
-.proj-row-divider{width:1px;height:52px;background:var(--border);flex-shrink:0;}
+.proj-row-divider{width:1px;align-self:stretch;background:var(--border);flex-shrink:0;}
 .proj-bal-side{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
-.proj-bal-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--dim);}
-.proj-bal-pill{display:inline-flex;align-items:center;gap:3px;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:800;white-space:nowrap;}
+.proj-bal-lbl{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--dim);}
+.proj-bal-pill{display:inline-flex;align-items:center;gap:3px;padding:4px 10px;border-radius:20px;font-size:16px;font-weight:800;white-space:nowrap;}
 .proj-bal-pill.surplus{background:rgba(74,222,128,.12);color:var(--green);border:1px solid rgba(74,222,128,.3);}
 .proj-bal-pill.over{background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.3);}
 
@@ -761,14 +765,6 @@ input[type=file]{display:none;}
           <div class="ts-preview" style="background:#0c0b1a"><div class="ts-card" style="background:#121028"></div><div class="ts-accent" style="background:#a78bfa"></div></div>
           <span>Midnight</span>
         </button>
-        <!-- <button class="theme-swatch" data-theme="ember" onclick="setTheme('ember')">
-          <div class="ts-preview" style="background:#120a01"><div class="ts-card" style="background:#1e1202"></div><div class="ts-accent" style="background:#f59e0b"></div></div>
-          <span>Ember</span>
-        </button> -->
-        <!-- <button class="theme-swatch" data-theme="violet" onclick="setTheme('violet')">
-          <div class="ts-preview" style="background:#f5f3ff;border:1px solid #ddd6fe"><div class="ts-card" style="background:#e8e2ff"></div><div class="ts-accent" style="background:#7c3aed"></div></div>
-          <span>Violet</span>
-        </button> -->
       </div>
 
       <!-- Category management -->
@@ -839,8 +835,8 @@ input[type=file]{display:none;}
       </div>
       <div class="field select-field"><label>Item Name</label><select id="ai-name"></select></div>
       <div class="field-row">
-        <div class="field"><label>Mid-Month (₱)</label><input id="ai-mid" type="number" inputmode="decimal" placeholder="0.00" step="0.01"/></div>
-        <div class="field"><label>Month-End (₱)</label><input id="ai-end" type="number" inputmode="decimal" placeholder="0.00" step="0.01"/></div>
+        <div class="field"><label>Mid-Month (₱)</label><input id="ai-mid" type="text" inputmode="decimal" placeholder="0.00" onfocus="amtFocus(this)" onblur="amtBlur(this)"/></div>
+        <div class="field"><label>Month-End (₱)</label><input id="ai-end" type="text" inputmode="decimal" placeholder="0.00" onfocus="amtFocus(this)" onblur="amtBlur(this)"/></div>
       </div>
       <div class="field"><label>Notes</label><input id="ai-notes" type="text" placeholder="Optional"/></div>
       <div class="sheet-actions">
@@ -860,8 +856,8 @@ input[type=file]{display:none;}
       </div>
       <div class="field select-field"><label>Item Name</label><select id="ei-name"></select></div>
       <div class="field-row">
-        <div class="field"><label>Mid-Month (₱)</label><input id="ei-mid" type="number" inputmode="decimal" placeholder="0.00" step="0.01"/></div>
-        <div class="field"><label>Month-End (₱)</label><input id="ei-end" type="number" inputmode="decimal" placeholder="0.00" step="0.01"/></div>
+        <div class="field"><label>Mid-Month (₱)</label><input id="ei-mid" type="text" inputmode="decimal" placeholder="0.00" onfocus="amtFocus(this)" onblur="amtBlur(this)"/></div>
+        <div class="field"><label>Month-End (₱)</label><input id="ei-end" type="text" inputmode="decimal" placeholder="0.00" onfocus="amtFocus(this)" onblur="amtBlur(this)"/></div>
       </div>
       <div class="field"><label>Notes</label><input id="ei-notes" type="text" placeholder="Optional"/></div>
       <div class="sheet-actions">
@@ -916,7 +912,7 @@ input[type=file]{display:none;}
       <div class="field"><label>Sub-Category Name</label><input id="aci-name" type="text" placeholder="e.g. Credit Card - BPI" autocomplete="off"></div>
       <div class="sheet-actions">
         <button class="btn-full btn-cancel" onclick="closeSheet('addCatItemSheet')">Cancel</button>
-        <button class="btn-full btn-confirm" onclick="confirmAddCatItem()">Add</button>
+        <button class="btn-full btn-confirm" onclick="confirmAddCatItem()">Save</button>
       </div>
     </div>
   </div>
@@ -945,7 +941,7 @@ input[type=file]{display:none;}
       </div>
       <div class="sheet-actions">
         <button class="btn-full btn-cancel" onclick="closeSheet('addMonthSheet')">Cancel</button>
-        <button class="btn-full btn-confirm" onclick="confirmAddMonth()">Add Month</button>
+        <button class="btn-full btn-confirm" onclick="confirmAddMonth()">Save</button>
       </div>
     </div>
   </div>
@@ -973,7 +969,7 @@ input[type=file]{display:none;}
       </div>
       <div class="sheet-actions">
         <button class="btn-full btn-cancel" onclick="closeSheet('copyMonthSheet')">Cancel</button>
-        <button class="btn-full btn-confirm" onclick="confirmCopyMonth()">Copy</button>
+        <button class="btn-full btn-confirm" onclick="confirmCopyMonth()">Save</button>
       </div>
     </div>
   </div>
@@ -984,7 +980,7 @@ input[type=file]{display:none;}
       <h3 id="ps-title">Edit Projected Pay</h3>
       <div class="field">
         <label id="ps-label">Amount (₱)</label>
-        <input id="ps-amt" type="number" inputmode="decimal" step="0.01"/>
+        <input id="ps-amt" type="text" inputmode="decimal" onfocus="amtFocus(this)" onblur="amtBlur(this)"/>
       </div>
       <div class="sheet-actions">
         <button class="btn-full btn-cancel" onclick="closeSheet('projSheet')">Cancel</button>
@@ -1189,6 +1185,10 @@ const CHART_COLORS=['#06b6d4','#4ade80','#fb923c','#f87171','#818cf8','#34d3e3',
 /* ── UTILS ────────────────────────────────── */
 const fmt=v=>'₱'+parseFloat(v||0).toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmtShort=v=>{const n=parseFloat(v||0);if(Math.abs(n)>=1000000)return'₱'+(n/1000000).toFixed(1)+'M';if(Math.abs(n)>=1000)return'₱'+(n/1000).toFixed(0)+'K';return fmt(v);};
+function fmtInput(n){if(n===''||n===null||n===undefined||isNaN(+n))return'';const p=(+n).toFixed(2).split('.');p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,',');return p.join('.');}
+function amtFocus(el){el.value=el.value.replace(/,/g,'');}
+function amtBlur(el){const n=parseFloat(el.value.replace(/,/g,''));el.value=isNaN(n)||el.value===''?'':fmtInput(n);}
+function parseAmt(id){return parseFloat((document.getElementById(id).value||'').replace(/,/g,''))||0;}
 const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 function isValidData(d){
   if(!d||typeof d!=='object'||Array.isArray(d))return false;
@@ -1543,14 +1543,13 @@ function renderSvList(){
     const savRate=projAmt>0?Math.max(0,Math.round(bal/projAmt*100)):0;
     const savColor=savRate>=20?'var(--green)':savRate>=10?'var(--amber)':'var(--red)';
     projWrap.innerHTML=`<div class="proj-row">
-      <div class="proj-row-arrow">↑</div>
       <div class="proj-income-side">
-        <div class="proj-income-lbl">Income</div>
-        <div class="proj-income-amt">${fmt(projAmt)}<span class="proj-income-pencil" onclick="openProjSheet()" title="Edit income"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></span></div>
+        <div class="proj-income-lbl">Projected Income</div>
+        <span class="proj-income-pill" onclick="openProjSheet()" title="Edit estimated/actual income">↑ ${fmt(projAmt)}<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></span>
       </div>
       <div class="proj-row-divider"></div>
       <div class="proj-bal-side">
-        <div class="proj-bal-lbl">Balance</div>
+        <div class="proj-bal-lbl">Net Balance</div>
         <span class="proj-bal-pill ${cls}">${arrow} ${fmt(Math.abs(bal))} <span style="opacity:.7;font-size:11px;">${savRate}%</span></span>
       </div>
     </div>`;
@@ -1574,13 +1573,13 @@ function openProjSheet(){
   const isMid=curPeriod==='mid';
   document.getElementById('ps-title').textContent=isMid?'Edit — Mid Month Projected':'Edit — Month End Projected';
   document.getElementById('ps-label').textContent=isMid?'Mid Month (₱)':'End of Month (₱)';
-  document.getElementById('ps-amt').value=isMid?m.projectedNetPayMid:m.projectedNetPayEnd;
+  document.getElementById('ps-amt').value=fmtInput(isMid?m.projectedNetPayMid:m.projectedNetPayEnd);
   openSheet('projSheet');
   setTimeout(()=>document.getElementById('ps-amt').focus(),300);
 }
 function confirmProjEdit(){
   const m=curMonth();if(!m)return;
-  const val=parseFloat(document.getElementById('ps-amt').value)||0;
+  const val=parseAmt('ps-amt');
   if(curPeriod==='mid')m.projectedNetPayMid=val;else m.projectedNetPayEnd=val;
   closeSheet('projSheet');renderOverview();saveData();toast('Projected Pay saved ✓');
 }
@@ -1759,7 +1758,7 @@ function renderSummary(){
     </div>
 
     ${months.length>1?`<div class="sum-section">
-      <div class="sum-section-label">Net Pay | Mid + End</div>
+      <div class="sum-section-label">Net Pay/Balance Per Month</div>
       <div class="mini-bar-list">${barRows}</div>
     </div>`:''}
 
@@ -1808,7 +1807,7 @@ function openAddItemSheet(){if(!curMonth()){toast('Select a month first','err');
 function confirmAddItem(){
   const name=document.getElementById('ai-name').value;if(!name){toast('Select an item','err');return;}
   const cat=document.getElementById('ai-category').value;
-  const item={name,mid:parseFloat(document.getElementById('ai-mid').value)||0,end:parseFloat(document.getElementById('ai-end').value)||0,notes:document.getElementById('ai-notes').value.trim(),status:'pending'};
+  const item={name,mid:parseAmt('ai-mid'),end:parseAmt('ai-end'),notes:document.getElementById('ai-notes').value.trim(),status:'pending'};
   if(cat)item.category=cat;
   curMonth().items.push(item);
   closeSheet('addItemSheet');renderOverview();saveData();toast('Item added ✓');
@@ -1819,8 +1818,8 @@ function openEditSheet(idx){
   const item=curMonth().items[idx];
   if((item.status||'pending')==='paid'){toast('Already paid — unlock status first to edit','err');return;}
   const cat=item.category||getCategory(item);
-  document.getElementById('ei-mid').value=item.mid||'';
-  document.getElementById('ei-end').value=item.end||'';
+  document.getElementById('ei-mid').value=fmtInput(item.mid||'');
+  document.getElementById('ei-end').value=fmtInput(item.end||'');
   document.getElementById('ei-notes').value=item.notes||'';
   document.getElementById('ei-category').value=cat;
   refreshEiNameSelect(cat,item.name);
@@ -1839,8 +1838,8 @@ function confirmEditItem(){
   const item=curMonth().items[editingItemIdx];
   const newName=document.getElementById('ei-name').value||item.name;
   item.name=newName;
-  item.mid=parseFloat(document.getElementById('ei-mid').value)||0;
-  item.end=parseFloat(document.getElementById('ei-end').value)||0;
+  item.mid=parseAmt('ei-mid');
+  item.end=parseAmt('ei-end');
   item.notes=document.getElementById('ei-notes').value.trim();
   item.category=document.getElementById('ei-category').value;
   closeSheet('editItemSheet');renderOverview();saveData();
