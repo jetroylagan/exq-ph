@@ -1612,9 +1612,6 @@ function renderOverview(){
   renderSvList();
   renderDonut(m.items,curPeriod==='mid');
   renderCatBreakdown(m.items,curPeriod==='mid');
-  const screen=document.getElementById('screen-overview');
-  screen.ontouchstart=e=>{screen._sx=e.touches[0].clientX;};
-  screen.ontouchend=e=>{const dx=e.changedTouches[0].clientX-screen._sx;if(Math.abs(dx)>50)swipeMonth(dx<0?1:-1);};
 }
 
 function renderSvList(){
