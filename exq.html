@@ -12,7 +12,7 @@
 <meta property="og:title" content="ExQ-PH">
 <meta property="og:description" content="ExQ-PH — track salary, expenses and savings.">
 <meta property="og:type" content="website">
-<title>ExQ-PH v4</title>
+<title>ExQ-PH v5</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='80' height='80' rx='18' fill='%230e1815'/%3E%3Ccircle cx='38' cy='38' r='20' fill='none' stroke='%2306b6d4' stroke-width='5' opacity='0.3'/%3E%3Ccircle cx='38' cy='38' r='20' fill='none' stroke='%2306b6d4' stroke-width='5' stroke-dasharray='88 38' transform='rotate(-90 38 38)'/%3E%3Cline x1='52' y1='52' x2='62' y2='62' stroke='%234ade80' stroke-width='5' stroke-linecap='round'/%3E%3Ctext x='24' y='30' font-size='13' font-weight='900' fill='%2367e8f9' font-family='monospace'%3EEx%3C/text%3E%3Ctext x='55' y='22' font-size='10' font-weight='800' fill='%234ade80' font-family='monospace'%3EPH%3C/text%3E%3C/svg%3E">
 <link rel="apple-touch-icon" id="appleTouchIcon" href="">
 <script>document.documentElement.dataset.theme=localStorage.getItem('jetiq_theme')||'forest';</script>
@@ -683,6 +683,7 @@ input[type=file]{display:none;}
         <div class="header-sub" id="headerSub">Loading…</div>
       </div>
     </div>
+    <button class="header-action" id="hideAmountsBtn" onclick="toggleHideAmounts()" title="Hide amounts"></button>
   </div>
 
   <!-- SCREENS -->
@@ -1279,8 +1280,9 @@ let copySourceYear=null,copySourceIdx=null;
 const CHART_COLORS=['#06b6d4','#4ade80','#fb923c','#f87171','#818cf8','#34d3e3','#f9a8d4','#86efac','#fcd34d','#fb923c','#c084fc','#67e8f9'];
 
 /* ── UTILS ────────────────────────────────── */
-const fmt=v=>'₱'+parseFloat(v||0).toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2});
-const fmtShort=v=>{const n=parseFloat(v||0);if(Math.abs(n)>=1000000)return'₱'+(n/1000000).toFixed(1)+'M';if(Math.abs(n)>=1000)return'₱'+(n/1000).toFixed(0)+'K';return fmt(v);};
+let amountsHidden=localStorage.getItem('jetiq_hide_amounts')==='1';
+const fmt=v=>amountsHidden?'₱ ••••':'₱'+parseFloat(v||0).toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtShort=v=>{if(amountsHidden)return'₱ ••••';const n=parseFloat(v||0);if(Math.abs(n)>=1000000)return'₱'+(n/1000000).toFixed(1)+'M';if(Math.abs(n)>=1000)return'₱'+(n/1000).toFixed(0)+'K';return fmt(v);};
 function fmtInput(n){if(n===''||n===null||n===undefined||isNaN(+n))return'';const p=(+n).toFixed(2).split('.');p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,',');return p.join('.');}
 function amtFocus(el){el.value=el.value.replace(/,/g,'');}
 function amtBlur(el){const n=parseFloat(el.value.replace(/,/g,''));el.value=isNaN(n)||el.value===''?'':fmtInput(n);}
@@ -1530,7 +1532,7 @@ function _animateGauge(fillId,savedId,pctId,detailId,income,spent){
     savedEl.style.filter='drop-shadow(0 0 5px rgba(74,222,128,.45))';
   }
   if(pctEl){pctEl.textContent=income>0?Math.round(spentPct*100)+'%':'—';pctEl.style.color=color;}
-  if(detailEl){detailEl.textContent=income>0?`₱${Math.round(spent).toLocaleString()} spent`:'—';detailEl.style.color=color;}
+  if(detailEl){detailEl.textContent=income>0?(amountsHidden?'₱ •••• spent':`₱${Math.round(spent).toLocaleString()} spent`):'—';detailEl.style.color=color;}
 }
 
 function updateRings(){
@@ -3105,11 +3107,30 @@ function migrateCategories(){
   saveCategories();
 }
 
+/* ── HIDE AMOUNTS ─────────────────────────── */
+const _EYE_ON=`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+const _EYE_OFF=`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
+function _syncHideBtn(){
+  const btn=document.getElementById('hideAmountsBtn');if(!btn)return;
+  btn.innerHTML=amountsHidden?_EYE_OFF:_EYE_ON;
+  btn.style.color=amountsHidden?'var(--accent)':'';
+  btn.title=amountsHidden?'Show amounts':'Hide amounts';
+}
+function toggleHideAmounts(){
+  amountsHidden=!amountsHidden;
+  localStorage.setItem('jetiq_hide_amounts',amountsHidden?'1':'0');
+  _syncHideBtn();
+  renderOverview();
+  if(activeScreen==='months')renderMonths();
+  if(activeScreen==='summary')renderSummary();
+}
+
 const _saved=loadData();
 if(_saved!==null){data=_saved;if(Object.keys(_saved).length){migrateItemNames();migrateStatuses();}}
 migrateCategories();
 initSelect();
 refreshCategorySelects();
+_syncHideBtn();
 document.getElementById('cat-color-custom').addEventListener('input',e=>{renderCatColorGrid(e.target.value);_syncColorPreview(e.target.value);});
 </script>
 </body>
