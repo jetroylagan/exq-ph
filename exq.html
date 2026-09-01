@@ -683,9 +683,14 @@ input[type=file]{display:none;}
         <div class="header-sub" id="headerSub">Loading…</div>
       </div>
     </div>
-    <div style="display:flex;align-items:center;gap:8px;">
-      <button class="header-action" id="hideAmountsBtn" onclick="toggleHideAmounts()" title="Hide amounts"></button>
-      <button class="header-action" id="fbAuthBtn" onclick="fbToggleAuth()" title="Sign in to sync"></button>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button class="header-action" id="hideAmountsBtn" onclick="toggleHideAmounts()" title="Hide amounts"></button>
+        <button class="header-action" id="fbAuthBtn" onclick="fbToggleAuth()" title="Sign in to sync" style="position:relative;">
+          <span id="fbOnlineDot" style="display:none;position:absolute;top:2px;right:2px;width:7px;height:7px;border-radius:50%;background:var(--green);border:1.5px solid var(--bg);pointer-events:none;"></span>
+        </button>
+      </div>
+      <div id="fbStatusLabel" style="display:none;font-size:9px;font-weight:600;color:var(--green);letter-spacing:.3px;white-space:nowrap;padding-right:2px;"></div>
     </div>
   </div>
 
@@ -3134,16 +3139,21 @@ function _debouncedFbSave(){clearTimeout(_fbSaveTimer);_fbSaveTimer=setTimeout((
 const _CLOUD_SVG=`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>`;
 function _fbUpdateAuthUI(user){
   const btn=document.getElementById('fbAuthBtn');if(!btn)return;
+  const dot=document.getElementById('fbOnlineDot');
+  const lbl=document.getElementById('fbStatusLabel');
   if(user){
-    btn.innerHTML=user.photoURL
+    const avatar=user.photoURL
       ?`<img src="${user.photoURL}" style="width:22px;height:22px;border-radius:50%;object-fit:cover;pointer-events:none;" referrerpolicy="no-referrer">`
       :`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+    btn.innerHTML=avatar+`<span id="fbOnlineDot" style="position:absolute;top:2px;right:2px;width:7px;height:7px;border-radius:50%;background:var(--green);border:1.5px solid var(--bg);pointer-events:none;"></span>`;
     btn.title=`${user.displayName||user.email} — tap to sign out`;
     btn.style.color='var(--green)';
+    if(lbl){const name=user.displayName||user.email||'';lbl.textContent='● '+(name.split(' ')[0]||name);lbl.style.display='block';}
   }else{
     btn.innerHTML=_CLOUD_SVG;
     btn.title='Sign in with Google to sync data';
     btn.style.color='';
+    if(lbl){lbl.style.display='none';lbl.textContent='';}
   }
 }
 window._fbUpdateAuthUI=_fbUpdateAuthUI;
@@ -3184,12 +3194,12 @@ document.getElementById('cat-color-custom').addEventListener('input',e=>{renderC
    Firebase Console → Project Settings → General → Your apps → SDK setup
    ═══════════════════════════════════════════════════════════════════ */
 const _FB_CONFIG = {
-  apiKey:            "YOUR_API_KEY",
-  authDomain:        "YOUR_PROJECT.firebaseapp.com",
-  projectId:         "YOUR_PROJECT_ID",
-  storageBucket:     "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId:             "YOUR_APP_ID"
+  apiKey:            "AIzaSyCE-ZLT52G9osXpSSWDlmjpwN6Q4Ekp-KQ",
+  authDomain:        "exq-ph.firebaseapp.com",
+  projectId:         "exq-ph",
+  storageBucket:     "exq-ph.firebasestorage.app",
+  messagingSenderId: "425228044881",
+  appId:             "1:425228044881:web:2f99b82ae6458637464670"
 };
 /* ══════════════════════════════════════════════════════════════════ */
 
