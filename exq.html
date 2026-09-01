@@ -2371,15 +2371,19 @@ function parseRows(rows){
     const label=rowMonthLabel(rows[i]);
     if(label){
       i++;
-      let catCol=-1,notesCol=-1,midTargetCol=-1,endTargetCol=-1;
+      let catCol=-1,notesCol=-1,midTargetCol=-1,endTargetCol=-1,midStatusCol=-1,endStatusCol=-1;
       if(rows[i]&&String(rows[i][0]||'').toLowerCase()==='items'){
         const hdr=rows[i].map(v=>String(v||'').toLowerCase().trim());
         const ci=hdr.indexOf('category'),ni=hdr.indexOf('notes');
         const mti=hdr.indexOf('midtarget'),eti=hdr.indexOf('endtarget');
+        const msi=hdr.findIndex(h=>h==='mid status'||h==='midstatus');
+        const esi=hdr.findIndex(h=>h==='end status'||h==='endstatus');
         if(ci>=0)catCol=ci;
         if(ni>=0)notesCol=ni;
         if(mti>=0)midTargetCol=mti;
         if(eti>=0)endTargetCol=eti;
+        if(msi>=0)midStatusCol=msi;
+        if(esi>=0)endStatusCol=esi;
         i++;
       }
       /* legacy fallback: no header row detected */
@@ -2392,14 +2396,16 @@ function parseRows(rows){
         const name=row[0]!=null?String(row[0]).trim():null;
         if(!name){i++;continue;}
         if(name.toLowerCase()==='total'){i++;continue;}
-        if(name==='ProjectedNetPay'){pMid=parseFloat(row[1])||0;pEnd=parseFloat(endTargetCol>=0?row[3]:row[2])||0;i++;continue;}
+        if(name==='ProjectedNetPay'){pMid=parseFloat(row[1])||0;pEnd=parseFloat(endTargetCol>=0?row[4]:row[2])||0;i++;continue;}
         if(name==='NetPay'){i++;continue;}
         const midAmt=parseFloat(row[1])||0;
-        const endAmt=parseFloat(endTargetCol>=0?row[3]:row[2])||0;
+        const endAmt=parseFloat(endTargetCol>=0?row[4]:row[2])||0;
         const midTgt=midTargetCol>=0?parseDateCell(row[midTargetCol]):'';
         const endTgt=endTargetCol>=0?parseDateCell(row[endTargetCol]):'';
         const notesVal=notesCol>=0&&row[notesCol]?String(row[notesCol]).trim():'';
-        const item={name,mid:midAmt,midTarget:midTgt,end:endAmt,endTarget:endTgt,notes:notesVal};
+        const midSt=midStatusCol>=0&&row[midStatusCol]?String(row[midStatusCol]).trim().toLowerCase():'pending';
+        const endSt=endStatusCol>=0&&row[endStatusCol]?String(row[endStatusCol]).trim().toLowerCase():'pending';
+        const item={name,mid:midAmt,midStatus:midSt,midTarget:midTgt,end:endAmt,endStatus:endSt,endTarget:endTgt,notes:notesVal};
         if(catCol>=0&&row[catCol])item.category=String(row[catCol]).trim();
         items.push(item);
         i++;
@@ -2465,9 +2471,9 @@ function doExportExcel(){
       rows.push([null,m.month+', '+year,null,null,' - ']);
       rows.push(['Items','Mid','Mid Status','MidTarget','End','End Status','EndTarget','Category','Notes']);
       m.items.forEach(it=>rows.push([it.name,it.mid,it.midStatus||'pending',it.midTarget||'',it.end,it.endStatus||'pending',it.endTarget||'',it.category||getCategory(it),it.notes]));
-      rows.push(['Total',totMid(m),null,totEnd(m),null,null,null]);
-      rows.push(['ProjectedNetPay',m.projectedNetPayMid,null,m.projectedNetPayEnd,null,null,null]);
-      rows.push(['NetPay',netMid(m),null,netEnd(m),null,null,null]);
+      rows.push(['Total',totMid(m),null,null,totEnd(m),null,null,null,null]);
+      rows.push(['ProjectedNetPay',m.projectedNetPayMid,null,null,m.projectedNetPayEnd,null,null,null,null]);
+      rows.push(['NetPay',netMid(m),null,null,netEnd(m),null,null,null,null]);
       rows.push([]);
     });
     const ws=XLSX.utils.aoa_to_sheet(rows);
@@ -3100,7 +3106,7 @@ function migrateCategories(){
 }
 
 const _saved=loadData();
-if(_saved&&Object.keys(_saved).length){data=_saved;migrateItemNames();migrateStatuses();}
+if(_saved!==null){data=_saved;if(Object.keys(_saved).length){migrateItemNames();migrateStatuses();}}
 migrateCategories();
 initSelect();
 refreshCategorySelects();
