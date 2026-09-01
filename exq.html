@@ -12,7 +12,7 @@
 <meta property="og:title" content="ExQ-PH">
 <meta property="og:description" content="ExQ-PH — track salary, expenses and savings.">
 <meta property="og:type" content="website">
-<title>ExQ-PH v5</title>
+<title>ExQ-PH v6</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='80' height='80' rx='18' fill='%230e1815'/%3E%3Ccircle cx='38' cy='38' r='20' fill='none' stroke='%2306b6d4' stroke-width='5' opacity='0.3'/%3E%3Ccircle cx='38' cy='38' r='20' fill='none' stroke='%2306b6d4' stroke-width='5' stroke-dasharray='88 38' transform='rotate(-90 38 38)'/%3E%3Cline x1='52' y1='52' x2='62' y2='62' stroke='%234ade80' stroke-width='5' stroke-linecap='round'/%3E%3Ctext x='24' y='30' font-size='13' font-weight='900' fill='%2367e8f9' font-family='monospace'%3EEx%3C/text%3E%3Ctext x='55' y='22' font-size='10' font-weight='800' fill='%234ade80' font-family='monospace'%3EPH%3C/text%3E%3C/svg%3E">
 <link rel="apple-touch-icon" id="appleTouchIcon" href="">
 <script>document.documentElement.dataset.theme=localStorage.getItem('jetiq_theme')||'forest';</script>
@@ -683,7 +683,10 @@ input[type=file]{display:none;}
         <div class="header-sub" id="headerSub">Loading…</div>
       </div>
     </div>
-    <button class="header-action" id="hideAmountsBtn" onclick="toggleHideAmounts()" title="Hide amounts"></button>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <button class="header-action" id="hideAmountsBtn" onclick="toggleHideAmounts()" title="Hide amounts"></button>
+      <button class="header-action" id="fbAuthBtn" onclick="fbToggleAuth()" title="Sign in to sync"></button>
+    </div>
   </div>
 
   <!-- SCREENS -->
@@ -1250,7 +1253,7 @@ function loadCategories(){
   try{const s=localStorage.getItem('jetiq_categories');if(s){const p=JSON.parse(s);if(Array.isArray(p)&&p.length)return p;}}catch(e){}
   return DEFAULT_CATEGORIES.map(c=>({...c}));
 }
-function saveCategories(){try{localStorage.setItem('jetiq_categories',JSON.stringify(categories));}catch(e){}}
+function saveCategories(){try{localStorage.setItem('jetiq_categories',JSON.stringify(categories));}catch(e){}if(!_fbSyncing)_debouncedFbSave();}
 function getCatNames(){return categories.map(c=>c.name);}
 function getCatColor(name){return(categories.find(c=>c.name===name)||{color:'#94a3b8'}).color;}
 function getCategory(nameOrItem){
@@ -1296,7 +1299,7 @@ function isValidData(d){
     )
   );
 }
-function saveData(){try{localStorage.setItem('jetiq_data',JSON.stringify(data));}catch(e){}}
+function saveData(){try{localStorage.setItem('jetiq_data',JSON.stringify(data));}catch(e){}if(!_fbSyncing)_debouncedFbSave();}
 function loadData(){try{const d=localStorage.getItem('jetiq_data');if(d){const p=JSON.parse(d);if(isValidData(p))return p;}}catch(e){}return null;}
 /* persist which month is "current" so it survives reloads */
 function saveCurrentPos(){try{if(curYear!=null&&curMonthIdx!=null)localStorage.setItem('jetiq_current_pos',JSON.stringify({year:curYear,idx:curMonthIdx}));else localStorage.removeItem('jetiq_current_pos');}catch(e){}}
@@ -3125,13 +3128,130 @@ function toggleHideAmounts(){
   if(activeScreen==='summary')renderSummary();
 }
 
+/* ── FIREBASE BRIDGE ──────────────────────── */
+let _fbSyncing=false,_fbSaveTimer=null;
+function _debouncedFbSave(){clearTimeout(_fbSaveTimer);_fbSaveTimer=setTimeout(()=>{if(window._fbSave)window._fbSave(data,categories);},2000);}
+const _CLOUD_SVG=`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>`;
+function _fbUpdateAuthUI(user){
+  const btn=document.getElementById('fbAuthBtn');if(!btn)return;
+  if(user){
+    btn.innerHTML=user.photoURL
+      ?`<img src="${user.photoURL}" style="width:22px;height:22px;border-radius:50%;object-fit:cover;pointer-events:none;" referrerpolicy="no-referrer">`
+      :`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+    btn.title=`${user.displayName||user.email} — tap to sign out`;
+    btn.style.color='var(--green)';
+  }else{
+    btn.innerHTML=_CLOUD_SVG;
+    btn.title='Sign in with Google to sync data';
+    btn.style.color='';
+  }
+}
+window._fbUpdateAuthUI=_fbUpdateAuthUI;
+window._fbLoadCloud=async function(){
+  if(!window._fbLoad)return;
+  const result=await window._fbLoad();
+  if(!result){toast('No cloud data found — local data kept','info');return;}
+  const{fbData,fbCategories}=result;
+  let changed=false;
+  _fbSyncing=true;
+  try{
+    if(fbData&&isValidData(fbData)){data=fbData;migrateItemNames();migrateStatuses();saveData();changed=true;}
+    if(fbCategories&&Array.isArray(fbCategories)&&fbCategories.length){categories=fbCategories;saveCategories();changed=true;}
+    if(changed){migrateCategories();initSelect();refreshCategorySelects();_syncHideBtn();renderOverview();if(activeScreen==='months')renderMonths();if(activeScreen==='summary')renderSummary();}
+  }finally{_fbSyncing=false;}
+  if(changed)toast('Cloud data loaded ✓');
+};
+function fbToggleAuth(){
+  if(window._fbCurrentUser){if(window._fbSignOut)window._fbSignOut();}
+  else if(window._fbSignIn){window._fbSignIn();}
+  else{toast('Firebase not configured — fill in _FB_CONFIG in the module script','warn');}
+}
+
 const _saved=loadData();
 if(_saved!==null){data=_saved;if(Object.keys(_saved).length){migrateItemNames();migrateStatuses();}}
 migrateCategories();
 initSelect();
 refreshCategorySelects();
 _syncHideBtn();
+_fbUpdateAuthUI(null);
 document.getElementById('cat-color-custom').addEventListener('input',e=>{renderCatColorGrid(e.target.value);_syncColorPreview(e.target.value);});
+</script>
+
+<script type="module">
+/* ═══════════════════════════════════════════════════════════════════
+   FIREBASE CONFIG
+   Replace the values below with your own project config.
+   Firebase Console → Project Settings → General → Your apps → SDK setup
+   ═══════════════════════════════════════════════════════════════════ */
+const _FB_CONFIG = {
+  apiKey:            "YOUR_API_KEY",
+  authDomain:        "YOUR_PROJECT.firebaseapp.com",
+  projectId:         "YOUR_PROJECT_ID",
+  storageBucket:     "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId:             "YOUR_APP_ID"
+};
+/* ══════════════════════════════════════════════════════════════════ */
+
+if (_FB_CONFIG.apiKey === "YOUR_API_KEY") {
+  console.warn("[ExQ-FB] Firebase not configured — fill in _FB_CONFIG to enable cloud sync.");
+} else {
+  const { initializeApp } =
+    await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+  const { getFirestore, doc, setDoc, getDoc } =
+    await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+  const { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } =
+    await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+
+  const _app  = initializeApp(_FB_CONFIG);
+  const _db   = getFirestore(_app);
+  const _auth = getAuth(_app);
+
+  onAuthStateChanged(_auth, user => {
+    window._fbCurrentUser = user || null;
+    window._fbUpdateAuthUI?.(user);
+    if (user) window._fbLoadCloud?.();
+  });
+
+  window._fbSignIn = async () => {
+    try { await signInWithPopup(_auth, new GoogleAuthProvider()); }
+    catch (e) { console.error('[ExQ-FB] sign-in error', e); }
+  };
+
+  window._fbSignOut = async () => {
+    await signOut(_auth);
+    window._fbCurrentUser = null;
+  };
+
+  window._fbSave = async (data, categories) => {
+    if (!window._fbCurrentUser) return;
+    try {
+      await setDoc(
+        doc(_db, 'users', window._fbCurrentUser.uid, 'jetiq', 'finance'),
+        {
+          data:       JSON.stringify(data),
+          categories: JSON.stringify(categories),
+          updatedAt:  new Date().toISOString()
+        }
+      );
+    } catch (e) { console.error('[ExQ-FB] save error', e); }
+  };
+
+  window._fbLoad = async () => {
+    if (!window._fbCurrentUser) return null;
+    try {
+      const snap = await getDoc(
+        doc(_db, 'users', window._fbCurrentUser.uid, 'jetiq', 'finance')
+      );
+      if (!snap.exists()) return null;
+      const d = snap.data();
+      return {
+        fbData:       d.data       ? JSON.parse(d.data)       : null,
+        fbCategories: d.categories ? JSON.parse(d.categories) : null
+      };
+    } catch (e) { console.error('[ExQ-FB] load error', e); return null; }
+  };
+}
 </script>
 </body>
 </html>
