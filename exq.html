@@ -367,11 +367,11 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .cat-bk-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
 .cat-bk-row:last-child{margin-bottom:0;}
 .cat-bk-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
-.cat-bk-name{font-size:12px;color:var(--dim);width:90px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cat-bk-name{font-size:15px;color:var(--dim);width:110px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .cat-bk-bar-track{flex:1;height:5px;background:var(--border);border-radius:999px;overflow:hidden;}
 .cat-bk-bar-fill{height:100%;border-radius:999px;transition:width .3s;}
-.cat-bk-pct{font-size:10px;font-weight:700;color:var(--muted);width:28px;text-align:right;flex-shrink:0;}
-.cat-bk-amt{font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--text);width:70px;text-align:right;flex-shrink:0;}
+.cat-bk-pct{font-size:15px;font-weight:700;color:var(--muted);width:36px;text-align:right;flex-shrink:0;}
+.cat-bk-amt{font-size:15px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--text);width:80px;text-align:right;flex-shrink:0;}
 
 /* ── DONUT ─────────────────────────────────── */
 .donut-wrap{margin:0 16px 40px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;}
@@ -381,7 +381,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .donut-legend-item{display:flex;align-items:center;gap:8px;}
 .donut-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
 .donut-legend-name{font-size:15px;color:var(--dim);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.donut-legend-pct{font-size:15px;font-weight:700;font-family:'JetBrains Mono',monospace;}
+.donut-legend-pct{font-size:15px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--muted);width:36px;text-align:right;flex-shrink:0;}
+.donut-legend-amt{font-size:15px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--text);width:52px;text-align:right;flex-shrink:0;}
 
 /* ── NEW DASHBOARD ─────────────────────────── */
 .period-row{padding:10px 16px 0;display:flex;}
@@ -588,8 +589,9 @@ input[type=file]{display:none;}
 .empty-state p{font-size:13px;line-height:1.5;}
 
 /* ── ITEM STATUS ───────────────────────────── */
-.exp-status-btn{height:26px;border-radius:20px;border:none;background:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:opacity .15s;-webkit-tap-highlight-color:transparent;padding:0;min-width:90px;}
-.exp-status-btn:hover{opacity:.7;}
+.exp-status-btn{width:34px;height:34px;min-width:34px;border-radius:50%;border:none;background:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:opacity .15s,background .15s;-webkit-tap-highlight-color:transparent;padding:0;}
+.exp-status-btn:hover{opacity:.7;background:var(--card2);}
+.status-sep{width:1px;align-self:stretch;background:var(--border);flex-shrink:0;}
 .exp-item{border-left:3px solid transparent;}
 .exp-item.is-paid{background:rgba(74,222,128,.04);border-left-color:var(--green);}
 .exp-item.is-paid .exp-name{text-decoration:line-through;color:var(--muted);}
@@ -637,7 +639,8 @@ input[type=file]{display:none;}
 
 /* ── TWO-LINE ROW LIST ──────────────────────── */
 .exp2-list{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;}
-.exp2-item{display:flex;flex-direction:column;padding:10px 14px;border-bottom:1px solid var(--border);border-left:3px solid transparent;cursor:pointer;transition:background .1s;gap:5px;}
+.exp2-item{display:flex;flex-direction:row;align-items:stretch;padding:0;border-bottom:1px solid var(--border);border-left:3px solid transparent;cursor:pointer;transition:background .1s;}
+.exp2-content{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;padding:10px 10px 10px 14px;}
 .exp2-item:last-child{border-bottom:none;}
 .exp2-item:hover{background:rgba(6,182,212,.04);}
 .exp2-item:active{background:rgba(6,182,212,.08);}
@@ -646,15 +649,15 @@ input[type=file]{display:none;}
 .exp2-name{flex:1;font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
 .exp2-item.row-paid .exp2-name{text-decoration:line-through;color:var(--muted);}
 .exp2-amt{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;flex-shrink:0;}
-.exp2-item .exp-status-btn{min-width:unset;flex-shrink:0;padding:0;}
+.exp2-item>.exp-status-btn{align-self:center;flex-shrink:0;margin:0 10px;}
 .exp2-meta{display:flex;align-items:center;gap:5px;min-width:0;overflow:hidden;}
 .exp2-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-.exp2-cat{font-size:11px;color:var(--dim);flex-shrink:0;}
-.exp2-sep{font-size:10px;color:var(--border2);flex-shrink:0;}
-.exp2-tgt{font-size:11px;font-weight:600;font-family:'JetBrains Mono',monospace;flex-shrink:0;}
-.exp2-notes{font-size:11px;color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
+.exp2-cat{font-size:12px;color:var(--dim);flex-shrink:0;}
+.exp2-sep{font-size:11px;color:var(--border2);flex-shrink:0;}
+.exp2-tgt{font-size:12px;font-weight:600;font-family:'JetBrains Mono',monospace;flex-shrink:0;}
+.exp2-notes{font-size:12px;color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
 .exp2-footer{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:var(--card2);border-top:2px solid var(--border);}
-.exp2-footer-lbl{font-size:10px;font-weight:800;color:var(--dim);text-transform:uppercase;letter-spacing:.8px;}
+.exp2-footer-lbl{font-size:14px;font-weight:800;color:var(--dim);text-transform:uppercase;letter-spacing:.8px;}
 .exp2-footer-amt{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:800;color:var(--text);}
 .sort-row{display:flex;align-items:center;gap:5px;padding:0 0 8px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
 .sort-chip{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;}
@@ -1445,10 +1448,10 @@ function tgtUrgency(dateStr,st){
 function tgtColor(u){return u==='overdue'?'var(--red)':u==='soon'?'var(--amber)':'var(--accent)';}
 function sortInd(col){if(tblSortCol!==col)return'<span class="sort-ind">⇅</span>';return`<span class="sort-ind">${tblSortDir>0?'↑':'↓'}</span>`;}
 
-/* status icon SVGs */
+/* status icon SVGs — fixed 22px, no text, no layout shift */
 const STATUS_ICONS={
-  pending:`<span class="status-pill sp-pending">● Pending</span>`,
-  paid:`<span class="status-pill sp-paid">✓ Paid</span>`
+  pending:`<svg width="28" height="28" viewBox="0 0 22 22" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" style="pointer-events:none"><circle cx="11" cy="11" r="8.5"/></svg>`,
+  paid:`<svg width="28" height="28" viewBox="0 0 22 22" fill="none" style="pointer-events:none"><circle cx="11" cy="11" r="9" fill="var(--green)" fill-opacity="0.15" stroke="var(--green)" stroke-width="1.5"/><polyline points="6.5,11 9.5,14 15.5,8" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`
 };
 function getStatusIcon(s){const k=(s==='paid')?'paid':'pending';return STATUS_ICONS[k];}
 const STATUS_CYCLE={pending:'paid',paid:'pending'};
@@ -1568,45 +1571,46 @@ function swipeMonth(dir){
   curYear=ny;curMonthIdx=ni;saveCurrentPos();updateHeaderSub();updateMonthNav();resetPeriod();renderOverview();document.getElementById('screen-overview').scrollTop=0;
 }
 
-function renderCatBreakdown(items,isMid){
-  const el=document.getElementById('catBreakdown');if(!el)return;
-  const nz=items.filter(it=>(isMid?it.mid:it.end)>0);
-  if(!nz.length){el.innerHTML='';return;}
-  const catMap={};
-  nz.forEach(it=>{const c=getCategory(it),amt=isMid?it.mid:it.end;catMap[c]=(catMap[c]||{color:getCatColor(c),amt:0});catMap[c].amt+=amt;});
-  const entries=Object.entries(catMap).sort((a,b)=>b[1].amt-a[1].amt);
-  const total=entries.reduce((s,[,v])=>s+v.amt,0)||1;
-  const rows=entries.map(([name,{color,amt}])=>{
-    const pct=Math.round(amt/total*100);
-    return`<div class="cat-bk-row">
-      <div class="cat-bk-dot" style="background:${color}"></div>
-      <div class="cat-bk-name">${esc(name)}</div>
-      <div class="cat-bk-bar-track"><div class="cat-bk-bar-fill" style="width:${pct}%;background:${color}"></div></div>
-      <div class="cat-bk-pct">${pct}%</div>
-      <div class="cat-bk-amt">${fmtShort(amt)}</div>
-    </div>`;
-  }).join('');
-  el.innerHTML=`<div class="cat-bk-wrap"><div class="cat-bk-title">By Category</div>${rows}</div>`;
-}
+function renderCatBreakdown(){}
+let _donutSegs=[];
 function renderDonut(items,isMid){
   const svg=document.getElementById('donutSvg'),legend=document.getElementById('donutLegend'),wrap=document.getElementById('donutWrap');
   const nz=items.filter(it=>(isMid?it.mid:it.end)>0);
   if(!nz.length){wrap.style.display='none';return;}
   wrap.style.display='';
-  /* aggregate by category */
   const catTotals={};
   nz.forEach(it=>{const cat=getCategory(it);catTotals[cat]=(catTotals[cat]||0)+(isMid?it.mid:it.end);});
-  const segs=categories.filter(c=>catTotals[c.name]>0).map(c=>({name:c.name,color:c.color,amt:catTotals[c.name]}));
-  const total=segs.reduce((s,s2)=>s+s2.amt,0);
-  const cx=75,cy=75,r=56,sw=22,circ=2*Math.PI*r;
-  let offset=0,paths=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--card2)" stroke-width="${sw}"/>`,lgd='';
-  segs.forEach(({name,color,amt})=>{
-    const pct=amt/total,dash=pct*circ,gap=circ-dash;
-    paths+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${color}" stroke-width="${sw}" stroke-dasharray="${dash} ${gap}" stroke-dashoffset="${-offset}" transform="rotate(-90 ${cx} ${cy})"/>`;
-    offset+=dash;
-    lgd+=`<div class="donut-legend-item"><div class="donut-dot" style="background:${color}"></div><div class="donut-legend-name">${esc(name)}</div><div class="donut-legend-pct">${(pct*100).toFixed(0)}%</div></div>`;
+  _donutSegs=categories.filter(c=>catTotals[c.name]>0).map(c=>({name:c.name,color:c.color,amt:catTotals[c.name]}));
+  const total=_donutSegs.reduce((s,s2)=>s+s2.amt,0);
+  const cx=75,cy=75,oR=67,iR=45,GAP=0.025;
+  let angle=-Math.PI/2,paths='',lgd='';
+  _donutSegs.forEach(({name,color,amt},i)=>{
+    const pct=amt/total,sweep=pct*2*Math.PI-GAP;
+    const a0=angle+GAP/2,a1=a0+sweep,large=sweep>Math.PI?1:0;
+    const x1=cx+oR*Math.cos(a0),y1=cy+oR*Math.sin(a0);
+    const x2=cx+oR*Math.cos(a1),y2=cy+oR*Math.sin(a1);
+    const x3=cx+iR*Math.cos(a1),y3=cy+iR*Math.sin(a1);
+    const x4=cx+iR*Math.cos(a0),y4=cy+iR*Math.sin(a0);
+    const d=`M${x1},${y1} A${oR},${oR},0,${large},1,${x2},${y2} L${x3},${y3} A${iR},${iR},0,${large},0,${x4},${y4} Z`;
+    paths+=`<path d="${d}" fill="${color}" style="cursor:pointer;transition:opacity .15s" onmouseenter="_showDTip(${i})" onmouseleave="_hideDTip()"/>`;
+    angle+=pct*2*Math.PI;
+    const pctLbl=Math.round(pct*100);
+    lgd+=`<div class="donut-legend-item"><div class="donut-dot" style="background:${color}"></div><div class="donut-legend-name">${esc(name)}</div><div class="donut-legend-pct">${pctLbl}%</div><div class="donut-legend-amt">${fmtShort(amt)}</div></div>`;
   });
+  paths+=`<text id="dtName" x="75" y="67" text-anchor="middle" font-size="8.5" fill="#94a3b8" opacity="0" style="pointer-events:none"></text>`;
+  paths+=`<text id="dtPct"  x="75" y="80" text-anchor="middle" font-size="14"  font-weight="800" fill="#e2e8f0" opacity="0" style="pointer-events:none"></text>`;
+  paths+=`<text id="dtAmt"  x="75" y="92" text-anchor="middle" font-size="8.5" font-family="JetBrains Mono,monospace" fill="#94a3b8" opacity="0" style="pointer-events:none"></text>`;
   svg.innerHTML=paths;legend.innerHTML=lgd;
+}
+function _showDTip(i){
+  const s=_donutSegs[i];if(!s)return;
+  const n=document.getElementById('dtName'),p=document.getElementById('dtPct'),a=document.getElementById('dtAmt');
+  if(!n)return;
+  n.textContent=s.name;p.textContent=Math.round(s.amt/_donutSegs.reduce((t,x)=>t+x.amt,0)*100)+'%';a.textContent=fmtShort(s.amt);
+  n.setAttribute('opacity','1');p.setAttribute('opacity','1');a.setAttribute('opacity','1');
+}
+function _hideDTip(){
+  ['dtName','dtPct','dtAmt'].forEach(id=>{const el=document.getElementById(id);if(el)el.setAttribute('opacity','0');});
 }
 
 function renderOverview(){
@@ -1701,12 +1705,15 @@ function renderSvList(){
       ...(it.notes?[`<span class="exp2-sep">·</span>`,`<span class="exp2-notes">${esc(it.notes)}</span>`]:[]),
     ].join('');
     return`<div class="exp2-item ${rowCls}" onclick="openEditSheet(${idx})">
-      <div class="exp2-main">
-        <div class="exp2-name">${esc(it.name)}</div>
-        <div class="exp2-amt" style="color:${amtColor}">${amt===0?'—':fmt(amt)}</div>
-        <button class="exp-status-btn" onclick="toggleItemStatus(${idx},event)" title="Cycle status">${getStatusIcon(st)}</button>
+      <div class="exp2-content">
+        <div class="exp2-main">
+          <div class="exp2-name">${esc(it.name)}</div>
+          <div class="exp2-amt" style="color:${amtColor}">${amt===0?'—':fmt(amt)}</div>
+        </div>
+        <div class="exp2-meta">${metaParts}</div>
       </div>
-      <div class="exp2-meta">${metaParts}</div>
+      <span class="status-sep"></span>
+      <button class="exp-status-btn" onclick="toggleItemStatus(${idx},event)" title="Cycle status">${getStatusIcon(st)}</button>
     </div>`;
   }).join('');
 
