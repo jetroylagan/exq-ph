@@ -564,6 +564,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .field label{display:block;font-size:11px;font-weight:700;color:var(--dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:.6px;}
 .field input,.select-field select{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-size:15px;font-family:'Inter',sans-serif;outline:none;transition:border-color .15s;}
 .field input:focus,.select-field select:focus{border-color:var(--accent);}
+.field input[type="date"]{color-scheme:inherit;}
 .select-field select{-webkit-appearance:none;appearance:none;}
 .field-row{display:flex;gap:10px;}
 .field-row .field{flex:1;min-width:0;}
@@ -937,14 +938,10 @@ input[type=file]{display:none;}
         <select id="ai-category" onchange="refreshAiNameSelect(this.value)"></select>
       </div>
       <div class="field select-field"><label>Item Name</label><select id="ai-name"></select></div>
-      <div class="field-row">
-        <div class="field"><label>Mid-Month (₱)</label><input id="ai-mid" type="text" inputmode="decimal" placeholder="0.00" onfocus="amtFocus(this)" onblur="amtBlur(this)"/></div>
-        <div class="field"><label>Month-End (₱)</label><input id="ai-end" type="text" inputmode="decimal" placeholder="0.00" onfocus="amtFocus(this)" onblur="amtBlur(this)"/></div>
-      </div>
-      <div class="field-row">
-        <div class="field"><label>Mid Target</label><input id="ai-midTarget" type="date" style="color-scheme:dark"/></div>
-        <div class="field"><label>End Target</label><input id="ai-endTarget" type="date" style="color-scheme:dark"/></div>
-      </div>
+      <div class="field"><label>Mid-Month (₱)</label><input id="ai-mid" type="text" inputmode="decimal" placeholder="0.00" onfocus="amtFocus(this)" onblur="amtBlur(this)"/></div>
+      <div class="field"><label>Mid Target</label><input id="ai-midTarget" type="date"/></div>
+      <div class="field"><label>Month-End (₱)</label><input id="ai-end" type="text" inputmode="decimal" placeholder="0.00" onfocus="amtFocus(this)" onblur="amtBlur(this)"/></div>
+      <div class="field"><label>End Target</label><input id="ai-endTarget" type="date"/></div>
       <div class="field"><label>Notes</label><input id="ai-notes" type="text" placeholder="Optional"/></div>
       <div class="sheet-actions">
         <button class="btn-full btn-cancel" onclick="closeSheet('addItemSheet')">Cancel</button>
@@ -962,14 +959,10 @@ input[type=file]{display:none;}
         <select id="ei-category" onchange="refreshEiNameSelect(this.value)"></select>
       </div>
       <div class="field select-field"><label>Item Name</label><select id="ei-name"></select></div>
-      <div class="field-row">
-        <div class="field"><label>Mid-Month (₱)</label><input id="ei-mid" type="text" inputmode="decimal" placeholder="0.00" onfocus="amtFocus(this)" onblur="amtBlur(this)"/></div>
-        <div class="field"><label>Month-End (₱)</label><input id="ei-end" type="text" inputmode="decimal" placeholder="0.00" onfocus="amtFocus(this)" onblur="amtBlur(this)"/></div>
-      </div>
-      <div class="field-row">
-        <div class="field"><label>Mid Target</label><input id="ei-midTarget" type="date" style="color-scheme:dark"/></div>
-        <div class="field"><label>End Target</label><input id="ei-endTarget" type="date" style="color-scheme:dark"/></div>
-      </div>
+      <div class="field"><label>Mid-Month (₱)</label><input id="ei-mid" type="text" inputmode="decimal" placeholder="0.00" onfocus="amtFocus(this)" onblur="amtBlur(this)"/></div>
+      <div class="field"><label>Mid Target</label><input id="ei-midTarget" type="date"/></div>
+      <div class="field"><label>Month-End (₱)</label><input id="ei-end" type="text" inputmode="decimal" placeholder="0.00" onfocus="amtFocus(this)" onblur="amtBlur(this)"/></div>
+      <div class="field"><label>End Target</label><input id="ei-endTarget" type="date"/></div>
       <div class="field"><label>Notes</label><input id="ei-notes" type="text" placeholder="Optional"/></div>
       <div class="sheet-actions">
         <button class="btn-full btn-cancel" onclick="closeSheet('editItemSheet')">Cancel</button>
