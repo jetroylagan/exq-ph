@@ -3323,7 +3323,6 @@ if (_SB_URL === 'YOUR_SUPABASE_URL') {
     const { data: { user } } = await _sb.auth.getUser();
     if (!user) return;
     try {
-      const ts = new Date().toISOString();
       const monthRows = [];
       for (const [year, months] of Object.entries(data)) {
         for (const m of months) {
@@ -3335,7 +3334,7 @@ if (_SB_URL === 'YOUR_SUPABASE_URL') {
             projected_end: m.projectedNetPayEnd || 0,
             locked:        m.locked || false,
             items:         m.items  || [],
-            updated_at:    ts
+            updated_at:    m.updated_at || new Date().toISOString()
           });
         }
       }
@@ -3394,7 +3393,8 @@ if (_SB_URL === 'YOUR_SUPABASE_URL') {
           projectedNetPayMid: m.projected_mid,
           projectedNetPayEnd: m.projected_end,
           locked:             m.locked,
-          items:              m.items || []
+          items:              m.items || [],
+          updated_at:         m.updated_at
         });
       }
       Object.keys(fbData).forEach(y =>
