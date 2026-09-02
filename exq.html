@@ -3174,7 +3174,7 @@ window._fbLoadCloud=async function(){
 function fbToggleAuth(){
   if(window._fbCurrentUser){if(window._fbSignOut)window._fbSignOut();}
   else if(window._fbSignIn){window._fbSignIn();}
-  else{toast('Firebase not configured — fill in _FB_CONFIG in the module script','warn');}
+  else{toast('Supabase not configured — fill in _SB_URL and _SB_ANON','warn');}
 }
 
 const _saved=loadData();
@@ -3189,77 +3189,166 @@ document.getElementById('cat-color-custom').addEventListener('input',e=>{renderC
 
 <script type="module">
 /* ═══════════════════════════════════════════════════════════════════
-   FIREBASE CONFIG
-   Replace the values below with your own project config.
-   Firebase Console → Project Settings → General → Your apps → SDK setup
+   SUPABASE CONFIG
+   1. Create project at supabase.com
+   2. Run the SQL schema below in Supabase → SQL Editor
+   3. Enable Google provider: Authentication → Providers → Google
+   4. Add your site URL: Authentication → URL Configuration → Site URL
+   5. Fill in your project URL and anon key below
+   ───────────────────────────────────────────────────────────────────
+   SQL SCHEMA (run once in Supabase SQL Editor):
+
+   CREATE TABLE exq_months (
+     id            UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+     user_id       UUID REFERENCES auth.users NOT NULL,
+     year          TEXT NOT NULL,
+     month         TEXT NOT NULL,
+     projected_mid NUMERIC DEFAULT 0,
+     projected_end NUMERIC DEFAULT 0,
+     locked        BOOLEAN DEFAULT FALSE,
+     items         JSONB DEFAULT '[]',
+     updated_at    TIMESTAMPTZ DEFAULT NOW(),
+     UNIQUE(user_id, year, month)
+   );
+   CREATE TABLE exq_categories (
+     id         UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+     user_id    UUID REFERENCES auth.users NOT NULL,
+     name       TEXT NOT NULL,
+     color      TEXT DEFAULT '#94a3b8',
+     icon       TEXT DEFAULT 'info',
+     sort_order INTEGER DEFAULT 0,
+     items      TEXT[] DEFAULT '{}',
+     UNIQUE(user_id, name)
+   );
+   ALTER TABLE exq_months    ENABLE ROW LEVEL SECURITY;
+   ALTER TABLE exq_categories ENABLE ROW LEVEL SECURITY;
+   CREATE POLICY "own_months" ON exq_months FOR ALL USING (auth.uid() = user_id);
+   CREATE POLICY "own_cats"   ON exq_categories FOR ALL USING (auth.uid() = user_id);
    ═══════════════════════════════════════════════════════════════════ */
-const _FB_CONFIG = {
-  apiKey:            "AIzaSyCE-ZLT52G9osXpSSWDlmjpwN6Q4Ekp-KQ",
-  authDomain:        "exq-ph.firebaseapp.com",
-  projectId:         "exq-ph",
-  storageBucket:     "exq-ph.firebasestorage.app",
-  messagingSenderId: "425228044881",
-  appId:             "1:425228044881:web:2f99b82ae6458637464670"
-};
+const _SB_URL  = 'https://wdmtwemqjiboftppeuke.supabase.co';       // https://xxxx.supabase.co
+const _SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndkbXR3ZW1xamlib2Z0cHBldWtlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzMTUwNjAsImV4cCI6MjEwMzg5MTA2MH0.ohgGUa6M-Bzt86kWigv1DPwBBUquXnpq8M_K-mW4qR4';  // eyJ...
 /* ══════════════════════════════════════════════════════════════════ */
 
-if (_FB_CONFIG.apiKey === "YOUR_API_KEY") {
-  console.warn("[ExQ-FB] Firebase not configured — fill in _FB_CONFIG to enable cloud sync.");
+if (_SB_URL === 'https://wdmtwemqjiboftppeuke.supabase.co') {
+  console.warn('[ExQ-SB] Supabase not configured — fill in _SB_URL and _SB_ANON.');
 } else {
-  const { initializeApp } =
-    await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-  const { getFirestore, doc, setDoc, getDoc } =
-    await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-  const { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } =
-    await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+  const { createClient } =
+    await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+  const _sb = createClient(_SB_URL, _SB_ANON);
 
-  const _app  = initializeApp(_FB_CONFIG);
-  const _db   = getFirestore(_app);
-  const _auth = getAuth(_app);
+  const _MONTH_ORDER = ['January','February','March','April','May','June',
+                        'July','August','September','October','November','December'];
 
-  onAuthStateChanged(_auth, user => {
-    window._fbCurrentUser = user || null;
-    window._fbUpdateAuthUI?.(user);
-    if (user) window._fbLoadCloud?.();
+  function _adaptUser(u) {
+    if (!u) return null;
+    return {
+      uid:         u.id,
+      email:       u.email,
+      displayName: u.user_metadata?.full_name || u.user_metadata?.name || u.email,
+      photoURL:    u.user_metadata?.avatar_url || null
+    };
+  }
+
+  _sb.auth.onAuthStateChange((event, session) => {
+    const adapted = _adaptUser(session?.user || null);
+    window._fbCurrentUser = adapted;
+    window._fbUpdateAuthUI?.(adapted);
+    if (session?.user && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION')) {
+      window._fbLoadCloud?.();
+    }
   });
 
-  window._fbSignIn = async () => {
-    try { await signInWithPopup(_auth, new GoogleAuthProvider()); }
-    catch (e) { console.error('[ExQ-FB] sign-in error', e); }
-  };
+  window._fbSignIn = () => _sb.auth.signInWithOAuth({
+    provider: 'google',
+    options:  { redirectTo: window.location.href }
+  });
 
   window._fbSignOut = async () => {
-    await signOut(_auth);
+    await _sb.auth.signOut();
     window._fbCurrentUser = null;
+    window._fbUpdateAuthUI?.(null);
   };
 
   window._fbSave = async (data, categories) => {
-    if (!window._fbCurrentUser) return;
+    const { data: { user } } = await _sb.auth.getUser();
+    if (!user) return;
     try {
-      await setDoc(
-        doc(_db, 'users', window._fbCurrentUser.uid, 'jetiq', 'finance'),
-        {
-          data:       JSON.stringify(data),
-          categories: JSON.stringify(categories),
-          updatedAt:  new Date().toISOString()
+      // Upsert one row per month (items stored as JSONB array)
+      const monthRows = [];
+      for (const [year, months] of Object.entries(data)) {
+        for (const m of months) {
+          monthRows.push({
+            user_id:       user.id,
+            year,
+            month:         m.month,
+            projected_mid: m.projectedNetPayMid || 0,
+            projected_end: m.projectedNetPayEnd || 0,
+            locked:        m.locked || false,
+            items:         m.items  || [],
+            updated_at:    new Date().toISOString()
+          });
         }
-      );
-    } catch (e) { console.error('[ExQ-FB] save error', e); }
+      }
+      if (monthRows.length) {
+        const { error } = await _sb.from('exq_months')
+          .upsert(monthRows, { onConflict: 'user_id,year,month' });
+        if (error) throw error;
+      }
+
+      // Upsert categories
+      const catRows = categories.map((c, i) => ({
+        user_id:    user.id,
+        name:       c.name,
+        color:      c.color,
+        icon:       c.icon  || 'info',
+        sort_order: i,
+        items:      c.items || []
+      }));
+      if (catRows.length) {
+        const { error } = await _sb.from('exq_categories')
+          .upsert(catRows, { onConflict: 'user_id,name' });
+        if (error) throw error;
+      }
+    } catch (e) { console.error('[ExQ-SB] save error', e); }
   };
 
   window._fbLoad = async () => {
-    if (!window._fbCurrentUser) return null;
+    const { data: { user } } = await _sb.auth.getUser();
+    if (!user) return null;
     try {
-      const snap = await getDoc(
-        doc(_db, 'users', window._fbCurrentUser.uid, 'jetiq', 'finance')
+      const [{ data: months, error: me }, { data: cats, error: ce }] = await Promise.all([
+        _sb.from('exq_months').select('*').eq('user_id', user.id),
+        _sb.from('exq_categories').select('*').eq('user_id', user.id).order('sort_order')
+      ]);
+      if (me) throw me;
+      if (ce) throw ce;
+      if (!months?.length && !cats?.length) return null;
+
+      // Reconstruct nested data object expected by the app
+      const fbData = {};
+      for (const m of (months || [])) {
+        if (!fbData[m.year]) fbData[m.year] = [];
+        fbData[m.year].push({
+          month:              m.month,
+          projectedNetPayMid: m.projected_mid,
+          projectedNetPayEnd: m.projected_end,
+          locked:             m.locked,
+          items:              m.items || []
+        });
+      }
+      Object.keys(fbData).forEach(y =>
+        fbData[y].sort((a, b) => _MONTH_ORDER.indexOf(a.month) - _MONTH_ORDER.indexOf(b.month))
       );
-      if (!snap.exists()) return null;
-      const d = snap.data();
-      return {
-        fbData:       d.data       ? JSON.parse(d.data)       : null,
-        fbCategories: d.categories ? JSON.parse(d.categories) : null
-      };
-    } catch (e) { console.error('[ExQ-FB] load error', e); return null; }
+
+      const fbCategories = (cats || []).map(c => ({
+        name:  c.name,
+        color: c.color,
+        icon:  c.icon,
+        items: c.items || []
+      }));
+
+      return { fbData, fbCategories };
+    } catch (e) { console.error('[ExQ-SB] load error', e); return null; }
   };
 }
 </script>
