@@ -1305,6 +1305,7 @@ function isValidData(d){
   );
 }
 function saveData(){try{localStorage.setItem('jetiq_data',JSON.stringify(data));}catch(e){}if(!_fbSyncing)_debouncedFbSave();}
+function _touch(year,idx){if(data[year]&&data[year][idx])data[year][idx].updated_at=new Date().toISOString();}
 function loadData(){try{const d=localStorage.getItem('jetiq_data');if(d){const p=JSON.parse(d);if(isValidData(p))return p;}}catch(e){}return null;}
 /* persist which month is "current" so it survives reloads */
 function saveCurrentPos(){try{if(curYear!=null&&curMonthIdx!=null)localStorage.setItem('jetiq_current_pos',JSON.stringify({year:curYear,idx:curMonthIdx}));else localStorage.removeItem('jetiq_current_pos');}catch(e){}}
@@ -1477,7 +1478,7 @@ function toggleItemStatus(idx,e){
     it.endStatus=STATUS_CYCLE[it.endStatus||'pending'];
   }
   const newSt=curPeriod==='mid'?it.midStatus:it.endStatus;
-  saveData();renderSvList();updateNavBadge();
+  _touch(curYear,curMonthIdx);saveData();renderSvList();updateNavBadge();
   toast(`${it.name}: ${newSt==='paid'?'Paid ✓':'Pending'}`,'ok');
 }
 function resetPeriod(){curPeriod='mid';tblSortCol='default';tblSortDir=1;document.querySelectorAll('.hpt-btn').forEach((b,i)=>b.classList.toggle('active',i===0));document.querySelectorAll('.ring-card').forEach((c,i)=>{c.classList.toggle('active',i===0);c.classList.remove('active-purple');});}
@@ -1789,7 +1790,7 @@ function confirmProjEdit(){
   const m=curMonth();if(!m)return;
   const val=parseAmt('ps-amt');
   if(curPeriod==='mid')m.projectedNetPayMid=val;else m.projectedNetPayEnd=val;
-  closeSheet('projSheet');renderOverview();saveData();toast('Projected Pay saved ✓');
+  _touch(curYear,curMonthIdx);closeSheet('projSheet');renderOverview();saveData();toast('Projected Pay saved ✓');
 }
 
 /* ── MONTHS SCREEN ────────────────────────── */
@@ -1869,7 +1870,7 @@ function toggleMonthLock(year,idx,e){
   e.stopPropagation();
   const m=data[year][idx];
   m.locked=!m.locked;
-  saveData();renderMonths();
+  _touch(year,idx);saveData();renderMonths();
   if(curYear===year&&curMonthIdx===idx)renderOverview();
   toast(m.locked?'Month locked 🔒':'Month unlocked 🔓');
 }
@@ -1894,7 +1895,8 @@ function confirmCopyMonth(){
     const d=new Date(p[0],p[1]-1+1,p[2]);
     return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   };
-  data[dy].push({month:dn,projectedNetPayMid:src.projectedNetPayMid,projectedNetPayEnd:src.projectedNetPayEnd,
+  const _now=new Date().toISOString();
+  data[dy].push({month:dn,projectedNetPayMid:src.projectedNetPayMid,projectedNetPayEnd:src.projectedNetPayEnd,updated_at:_now,
     items:src.items.map(it=>({...it,midStatus:'pending',endStatus:'pending',midTarget:shiftDate(it.midTarget),endTarget:shiftDate(it.endTarget)}))});
   data[dy].sort((a,b)=>MONTHS.indexOf(a.month)-MONTHS.indexOf(b.month));
   closeSheet('copyMonthSheet');rebuildNavControls();renderMonths();saveData();toast(`Copied to ${dn} ${dy} ✓`);
@@ -2056,7 +2058,7 @@ function confirmAddItem(){
   const item={name,mid:parseAmt('ai-mid'),midTarget:document.getElementById('ai-midTarget').value,end:parseAmt('ai-end'),endTarget:document.getElementById('ai-endTarget').value,notes:document.getElementById('ai-notes').value.trim(),midStatus:'pending',endStatus:'pending'};
   if(cat)item.category=cat;
   curMonth().items.push(item);
-  closeSheet('addItemSheet');renderOverview();saveData();toast('Item added ✓');
+  _touch(curYear,curMonthIdx);closeSheet('addItemSheet');renderOverview();saveData();toast('Item added ✓');
 }
 function openEditSheet(idx){
   editingItemIdx=idx;
@@ -2095,7 +2097,7 @@ function confirmEditItem(){
   item.endTarget=document.getElementById('ei-endTarget').value;
   item.notes=document.getElementById('ei-notes').value.trim();
   item.category=document.getElementById('ei-category').value;
-  closeSheet('editItemSheet');renderOverview();saveData();
+  _touch(curYear,curMonthIdx);closeSheet('editItemSheet');renderOverview();saveData();
   toast('Saved ✓');
 }
 function deleteExpenseItem(){
@@ -2106,7 +2108,7 @@ function deleteExpenseItem(){
   openConfirmSheet('del-expense','Clear Period Amount',`Clear "${esc(item.name)}" from the ${periodLabel} period? The item will stay for the other period.`,'Clear','var(--red)',()=>{
     if(isMid){item.mid=0;item.midTarget='';item.midStatus='pending';}
     else{item.end=0;item.endTarget='';item.endStatus='pending';}
-    closeSheet('editItemSheet');renderOverview();saveData();
+    _touch(curYear,curMonthIdx);closeSheet('editItemSheet');renderOverview();saveData();
     toast(`${item.name} cleared from ${periodLabel}`);
   });
 }
@@ -2342,7 +2344,7 @@ function confirmAddMonth(){
   const monthName=MONTHS[monthIdx];
   if(!data[year])data[year]=[];
   if(data[year].find(m=>m.month===monthName)){toast(monthName+' exists','err');return;}
-  data[year].push({month:monthName,projectedNetPayMid:0,projectedNetPayEnd:0,items:DEFAULT_ITEMS.map(n=>({name:n,mid:0,end:0,notes:''}))});
+  data[year].push({month:monthName,projectedNetPayMid:0,projectedNetPayEnd:0,updated_at:new Date().toISOString(),items:DEFAULT_ITEMS.map(n=>({name:n,mid:0,end:0,notes:''}))});
   data[year].sort((a,b)=>MONTHS.indexOf(a.month)-MONTHS.indexOf(b.month));
   curYear=year;curMonthIdx=data[year].findIndex(m=>m.month===monthName);saveCurrentPos();
   closeSheet('addMonthSheet');rebuildNavControls();renderMonths();updateHeaderSub();renderOverview();saveData();
@@ -2358,6 +2360,7 @@ document.getElementById('importXlsx').addEventListener('change',e=>{
       const wb=XLSX.read(ev.target.result,{type:'binary'});
       data={};
       wb.SheetNames.forEach(sn=>{const ws=wb.Sheets[sn];const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:null});data[sn.trim()]=parseRows(rows);});
+      const _iNow=new Date().toISOString();Object.values(data).forEach(ms=>ms.forEach(m=>{if(!m.updated_at)m.updated_at=_iNow;}));
       migrateItemNames();migrateStatuses();migrateCategories();initSelect();saveData();toast('Excel imported ✓');
     }catch(ex){toast('Import failed','err');}
     e.target.value='';
@@ -2563,7 +2566,8 @@ document.getElementById('restoreFile').addEventListener('change',e=>{
     try{
       const obj=JSON.parse(ev.target.result);const restored=obj.data||obj;
       if(!isValidData(restored)){toast('Invalid backup file','err');return;}
-      data=restored;migrateItemNames();migrateStatuses();initSelect();saveData();toast('Restored ✓');
+      data=restored;const _rNow=new Date().toISOString();Object.values(data).forEach(ms=>ms.forEach(m=>{if(!m.updated_at)m.updated_at=_rNow;}));
+      migrateItemNames();migrateStatuses();initSelect();saveData();toast('Restored ✓');
     }catch(ex){toast('Restore failed','err');}
     e.target.value='';
   };
@@ -3160,21 +3164,54 @@ window._fbUpdateAuthUI=_fbUpdateAuthUI;
 window._fbLoadCloud=async function(){
   if(!window._fbLoad)return;
   const result=await window._fbLoad();
-  if(!result){toast('No cloud data found — local data kept','info');return;}
+  if(!result){
+    if(window._fbSave&&Object.keys(data).length){
+      await window._fbSave(data,categories);
+      toast('Local data uploaded to cloud ✓');
+    }else{toast('Signed in ✓ — changes will sync automatically');}
+    return;
+  }
   const{fbData,fbCategories}=result;
-  let changed=false;
+  let localChanged=false;
   _fbSyncing=true;
   try{
-    if(fbData&&isValidData(fbData)){data=fbData;migrateItemNames();migrateStatuses();saveData();changed=true;}
-    if(fbCategories&&Array.isArray(fbCategories)&&fbCategories.length){categories=fbCategories;saveCategories();changed=true;}
-    if(changed){migrateCategories();initSelect();refreshCategorySelects();_syncHideBtn();renderOverview();if(activeScreen==='months')renderMonths();if(activeScreen==='summary')renderSummary();}
+    // Per-month timestamp merge: each month keeps whichever copy is newer
+    if(fbData&&typeof fbData==='object'){
+      for(const[year,cloudMonths]of Object.entries(fbData)){
+        if(!data[year]){data[year]=[];localChanged=true;}
+        for(const cm of cloudMonths){
+          const li=data[year].findIndex(m=>m.month===cm.month);
+          if(li===-1){data[year].push(cm);localChanged=true;}
+          else{
+            const cloudT=new Date(cm.updated_at||0).getTime();
+            const localT=new Date(data[year][li].updated_at||0).getTime();
+            if(cloudT>localT){data[year][li]=cm;localChanged=true;}
+            // else local is newer — keep as-is, will upload in _fbSave below
+          }
+        }
+        data[year].sort((a,b)=>MONTHS.indexOf(a.month)-MONTHS.indexOf(b.month));
+      }
+      if(localChanged){migrateItemNames();migrateStatuses();saveData();}
+    }
+    if(fbCategories&&Array.isArray(fbCategories)&&fbCategories.length){
+      categories=fbCategories;saveCategories();localChanged=true;
+    }
+    if(localChanged){
+      migrateCategories();initSelect();refreshCategorySelects();
+      _syncHideBtn();renderOverview();
+      if(activeScreen==='months')renderMonths();
+      if(activeScreen==='summary')renderSummary();
+    }
   }finally{_fbSyncing=false;}
-  if(changed)toast('Cloud data loaded ✓');
+  // Push merged state back (uploads locally-newer months + deletions)
+  if(window._fbSave)await window._fbSave(data,categories);
+  toast(localChanged?'Synced ✓':'Already up to date ✓');
 };
 function fbToggleAuth(){
   if(window._fbCurrentUser){if(window._fbSignOut)window._fbSignOut();}
   else if(window._fbSignIn){window._fbSignIn();}
-  else{toast('Supabase not configured — fill in _SB_URL and _SB_ANON','warn');}
+  else if(window._fbOffline){toast('No internet — sync unavailable offline','err');}
+  else{toast('Supabase not configured — fill in _SB_URL and _SB_ANON','err');}
 }
 
 const _saved=loadData();
@@ -3232,8 +3269,14 @@ const _SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsI
 if (_SB_URL === 'YOUR_SUPABASE_URL') {
   console.warn('[ExQ-SB] Supabase not configured — fill in _SB_URL and _SB_ANON.');
 } else {
-  const { createClient } =
-    await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+  let createClient;
+  try {
+    ({ createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'));
+  } catch (e) {
+    console.warn('[ExQ-SB] Failed to load Supabase (offline?):', e);
+    window._fbOffline = true;
+  }
+  if (!createClient) { /* skip setup — offline */ } else {
   const _sb = createClient(_SB_URL, _SB_ANON);
 
   const _MONTH_ORDER = ['January','February','March','April','May','June',
@@ -3273,7 +3316,7 @@ if (_SB_URL === 'YOUR_SUPABASE_URL') {
     const { data: { user } } = await _sb.auth.getUser();
     if (!user) return;
     try {
-      // Upsert one row per month (items stored as JSONB array)
+      const ts = new Date().toISOString();
       const monthRows = [];
       for (const [year, months] of Object.entries(data)) {
         for (const m of months) {
@@ -3285,17 +3328,21 @@ if (_SB_URL === 'YOUR_SUPABASE_URL') {
             projected_end: m.projectedNetPayEnd || 0,
             locked:        m.locked || false,
             items:         m.items  || [],
-            updated_at:    new Date().toISOString()
+            updated_at:    ts
           });
         }
       }
+      // Upsert first (safe), then delete orphans so local deletions propagate
       if (monthRows.length) {
         const { error } = await _sb.from('exq_months')
           .upsert(monthRows, { onConflict: 'user_id,year,month' });
         if (error) throw error;
       }
+      const localMonthKeys = new Set(monthRows.map(r => `${r.year}|${r.month}`));
+      const { data: cloudMonths } = await _sb.from('exq_months').select('id,year,month').eq('user_id', user.id);
+      const toDelMonths = (cloudMonths || []).filter(m => !localMonthKeys.has(`${m.year}|${m.month}`));
+      if (toDelMonths.length) await _sb.from('exq_months').delete().in('id', toDelMonths.map(m => m.id));
 
-      // Upsert categories
       const catRows = categories.map((c, i) => ({
         user_id:    user.id,
         name:       c.name,
@@ -3309,7 +3356,14 @@ if (_SB_URL === 'YOUR_SUPABASE_URL') {
           .upsert(catRows, { onConflict: 'user_id,name' });
         if (error) throw error;
       }
-    } catch (e) { console.error('[ExQ-SB] save error', e); }
+      const localCatNames = new Set(catRows.map(r => r.name));
+      const { data: cloudCats } = await _sb.from('exq_categories').select('id,name').eq('user_id', user.id);
+      const toDelCats = (cloudCats || []).filter(c => !localCatNames.has(c.name));
+      if (toDelCats.length) await _sb.from('exq_categories').delete().in('id', toDelCats.map(c => c.id));
+    } catch (e) {
+      console.error('[ExQ-SB] save error', e);
+      if(!navigator.onLine) window._fbUpdateAuthUI?.(window._fbCurrentUser); // keep UI consistent
+    }
   };
 
   window._fbLoad = async () => {
@@ -3350,7 +3404,7 @@ if (_SB_URL === 'YOUR_SUPABASE_URL') {
       return { fbData, fbCategories };
     } catch (e) { console.error('[ExQ-SB] load error', e); return null; }
   };
-}
+}} // end if(createClient) + else block
 </script>
 </body>
 </html>
