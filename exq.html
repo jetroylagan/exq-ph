@@ -566,7 +566,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .field input:focus,.select-field select:focus{border-color:var(--accent);}
 .select-field select{-webkit-appearance:none;appearance:none;}
 .field-row{display:flex;gap:10px;}
-.field-row .field{flex:1;}
+.field-row .field{flex:1;min-width:0;}
 .sheet-actions{display:flex;gap:10px;margin-top:4px;}
 .btn-full{flex:1;padding:14px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;border:none;font-family:'Inter',sans-serif;}
 .btn-full:active{opacity:.8;}
@@ -652,7 +652,7 @@ input[type=file]{display:none;}
 .exp2-item>.exp-status-btn{align-self:center;flex-shrink:0;margin:0 10px;}
 .exp2-meta{display:flex;align-items:center;gap:5px;min-width:0;overflow:hidden;}
 .exp2-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-.exp2-cat{font-size:13px;color:var(--dim);flex-shrink:0;}
+.exp2-cat{font-size:13px;color:var(--dim);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .exp2-sep{font-size:12px;color:var(--border2);flex-shrink:0;}
 .exp2-tgt{font-size:13px;font-weight:600;font-family:'JetBrains Mono',monospace;flex-shrink:0;}
 .exp2-notes{font-size:13px;color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;padding-top:3px;}
@@ -939,11 +939,11 @@ input[type=file]{display:none;}
       <div class="field select-field"><label>Item Name</label><select id="ai-name"></select></div>
       <div class="field-row">
         <div class="field"><label>Mid-Month (₱)</label><input id="ai-mid" type="text" inputmode="decimal" placeholder="0.00" onfocus="amtFocus(this)" onblur="amtBlur(this)"/></div>
-        <div class="field"><label>MidTarget</label><input id="ai-midTarget" type="date" style="color-scheme:dark"/></div>
+        <div class="field"><label>Month-End (₱)</label><input id="ai-end" type="text" inputmode="decimal" placeholder="0.00" onfocus="amtFocus(this)" onblur="amtBlur(this)"/></div>
       </div>
       <div class="field-row">
-        <div class="field"><label>Month-End (₱)</label><input id="ai-end" type="text" inputmode="decimal" placeholder="0.00" onfocus="amtFocus(this)" onblur="amtBlur(this)"/></div>
-        <div class="field"><label>EndTarget</label><input id="ai-endTarget" type="date" style="color-scheme:dark"/></div>
+        <div class="field"><label>Mid Target</label><input id="ai-midTarget" type="date" style="color-scheme:dark"/></div>
+        <div class="field"><label>End Target</label><input id="ai-endTarget" type="date" style="color-scheme:dark"/></div>
       </div>
       <div class="field"><label>Notes</label><input id="ai-notes" type="text" placeholder="Optional"/></div>
       <div class="sheet-actions">
@@ -964,11 +964,11 @@ input[type=file]{display:none;}
       <div class="field select-field"><label>Item Name</label><select id="ei-name"></select></div>
       <div class="field-row">
         <div class="field"><label>Mid-Month (₱)</label><input id="ei-mid" type="text" inputmode="decimal" placeholder="0.00" onfocus="amtFocus(this)" onblur="amtBlur(this)"/></div>
-        <div class="field"><label>MidTarget</label><input id="ei-midTarget" type="date" style="color-scheme:dark"/></div>
+        <div class="field"><label>Month-End (₱)</label><input id="ei-end" type="text" inputmode="decimal" placeholder="0.00" onfocus="amtFocus(this)" onblur="amtBlur(this)"/></div>
       </div>
       <div class="field-row">
-        <div class="field"><label>Month-End (₱)</label><input id="ei-end" type="text" inputmode="decimal" placeholder="0.00" onfocus="amtFocus(this)" onblur="amtBlur(this)"/></div>
-        <div class="field"><label>EndTarget</label><input id="ei-endTarget" type="date" style="color-scheme:dark"/></div>
+        <div class="field"><label>Mid Target</label><input id="ei-midTarget" type="date" style="color-scheme:dark"/></div>
+        <div class="field"><label>End Target</label><input id="ei-endTarget" type="date" style="color-scheme:dark"/></div>
       </div>
       <div class="field"><label>Notes</label><input id="ei-notes" type="text" placeholder="Optional"/></div>
       <div class="sheet-actions">
