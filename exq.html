@@ -300,17 +300,17 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .exp-section{margin:0 16px 10px;}
 .exp-section-hdr{display:flex;align-items:center;justify-content:space-between;padding:0 2px;margin-bottom:8px;}
 .exp-add-btn{
-  display:flex;align-items:center;gap:5px;
+  flex:1;display:flex;align-items:center;justify-content:center;gap:5px;
   padding:8px 14px;border-radius:8px;
   font-size:13px;font-weight:800;letter-spacing:.3px;
   background:var(--accent);color:#000;transition:opacity .15s;
 }
 .exp-add-btn:hover{opacity:.85;}
 .exp-zero-toggle{
-  padding:8px 14px;border-radius:8px;
+  flex:1;padding:8px 14px;border-radius:8px;
   font-size:13px;font-weight:700;letter-spacing:.3px;
   background:var(--card2);color:var(--muted);
-  border:1px solid var(--border);transition:all .15s;
+  border:1px solid var(--border);transition:all .15s;text-align:center;
 }
 .exp-zero-toggle:hover{background:var(--card3);color:var(--dim);}
 .exp-zero-toggle.active{background:var(--accent-soft);color:var(--accent);border-color:rgba(6,182,212,.35);}
@@ -446,29 +446,29 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .ma-header:active{background:rgba(99,102,241,.06);}
 .ma-row.current .ma-header{background:var(--accent-soft);}
 .ma-row.is-locked{border-left:3px solid var(--amber);}
-.ma-chevron{font-size:9px;color:var(--muted);width:12px;flex-shrink:0;transition:transform .2s;display:inline-block;}
+.ma-chevron{font-size:11px;color:var(--muted);width:12px;flex-shrink:0;transition:transform .2s;display:inline-block;}
 .ma-row.open .ma-chevron{transform:rotate(90deg);}
-.ma-name{font-size:14px;font-weight:700;flex:1;display:flex;align-items:center;gap:6px;min-width:0;}
+.ma-name{font-size:17px;font-weight:700;flex:1;display:flex;align-items:center;gap:6px;min-width:0;}
 .ma-prog-wrap{display:flex;align-items:center;gap:5px;flex-shrink:0;}
 .ma-prog-bar{width:46px;height:5px;background:var(--border);border-radius:999px;overflow:hidden;}
 .ma-prog-fill{height:100%;border-radius:999px;background:var(--green);}
-.ma-prog-count{font-size:10px;color:var(--muted);font-weight:600;white-space:nowrap;}
-.ma-net{font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace;min-width:56px;text-align:right;flex-shrink:0;}
+.ma-prog-count{font-size:12px;color:var(--muted);font-weight:600;white-space:nowrap;}
+.ma-net{font-size:14px;font-weight:700;font-family:'JetBrains Mono',monospace;min-width:56px;text-align:right;flex-shrink:0;}
 .ma-expand{display:none;padding:2px 14px 14px;}
 .ma-row.open .ma-expand{display:block;}
-.ma-detail-row{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;font-size:12px;}
+.ma-detail-row{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;font-size:14px;}
 .ma-detail-lbl{color:var(--muted);font-weight:600;}
-.ma-detail-val{font-weight:700;font-family:'JetBrains Mono',monospace;font-size:13px;}
-.ma-detail-exp{font-size:10px;color:var(--dim);}
+.ma-detail-val{font-weight:700;font-family:'JetBrains Mono',monospace;font-size:15px;}
+.ma-detail-exp{font-size:12px;color:var(--dim);}
 .ma-balance-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0 4px;border-top:1px solid var(--border);margin-top:4px;}
-.ma-balance-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);}
-.ma-balance-val{font-size:16px;font-weight:800;font-family:'JetBrains Mono',monospace;}
+.ma-balance-lbl{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);}
+.ma-balance-val{font-size:19px;font-weight:800;font-family:'JetBrains Mono',monospace;}
 .ma-act-row{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
-.ma-go-btn{flex:1;min-width:80px;padding:8px 10px;border-radius:8px;border:1px solid rgba(99,102,241,.5);background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:700;cursor:pointer;}
-.ma-lock-btn{padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;}
+.ma-go-btn{flex:1;min-width:80px;padding:8px 10px;border-radius:8px;border:1px solid rgba(99,102,241,.5);background:var(--accent-soft);color:var(--accent);font-size:14px;font-weight:700;cursor:pointer;}
+.ma-lock-btn{padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--muted);font-size:14px;font-weight:600;cursor:pointer;}
 .ma-lock-btn.locked{color:var(--amber);border-color:rgba(251,146,60,.4);background:var(--amber-soft);}
-.ma-copy-btn{padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--accent);font-size:12px;font-weight:600;cursor:pointer;}
-.ma-del-btn{padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--red);font-size:12px;font-weight:600;cursor:pointer;}
+.ma-copy-btn{padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--accent);font-size:14px;font-weight:600;cursor:pointer;}
+.ma-del-btn{padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--red);font-size:14px;font-weight:600;cursor:pointer;}
 .icon-btn{width:40px;height:40px;border-radius:9px;border:1px solid var(--border);background:none;display:flex;align-items:center;justify-content:center;transition:all .12s;}
 .icon-btn.copy{color:var(--accent);}
 .icon-btn.copy:hover,.icon-btn.copy:active{background:var(--accent-soft);}
@@ -493,17 +493,23 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .kpi-sub{font-size:14px;color:var(--dim);margin-top:5px;}
 /* Mini bar chart */
 .sum-section{margin:0 16px 12px;}
-.sum-section-label{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px;}
+.sum-section-label{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.mini-bar-yr-badge{font-size:13px;font-weight:700;letter-spacing:.5px;background:var(--card2);color:var(--dim);border:1px solid var(--border);padding:2px 10px;border-radius:99px;text-transform:none;}
+.mini-bar-legend{display:flex;align-items:center;margin-bottom:10px;}
+.mini-bar-legend-dot{width:14px;height:14px;border-radius:3px;flex-shrink:0;}
+.mini-bar-legend-lbl{font-size:13px;font-weight:600;color:var(--muted);margin-left:6px;}
 .mini-bar-list{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;padding:12px 14px 8px;}
-.mini-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-.mini-bar-row:last-child{margin-bottom:0;}
-.mini-bar-month{font-size:13px;font-weight:700;color:var(--dim);width:32px;flex-shrink:0;}
-.mini-bar-col{flex:1;display:flex;flex-direction:column;gap:4px;}
-.mini-bar-sub{display:flex;align-items:center;gap:6px;}
-.mini-bar-sub-lbl{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);width:22px;flex-shrink:0;}
-.mini-bar-track{flex:1;height:6px;background:var(--card2);border-radius:4px;overflow:hidden;}
-.mini-bar-fill{height:100%;border-radius:4px;transition:width .4s ease;}
-.mini-bar-val{font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace;width:54px;text-align:right;flex-shrink:0;}
+.mini-bar-row{display:grid;grid-template-columns:36px 1fr 62px;align-items:start;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);}
+.mini-bar-row:last-child{border-bottom:none;}
+.mini-bar-month{font-size:15px;font-weight:700;color:var(--dim);}
+.mini-bar-split{display:flex;height:28px;border-radius:6px;overflow:hidden;width:100%;}
+.mini-bar-seg{display:flex;align-items:center;justify-content:center;transition:width .4s ease;min-width:0;}
+.mini-bar-seg-lbl{font-size:12px;font-weight:800;color:rgba(0,0,0,.75);white-space:nowrap;overflow:hidden;padding:0 6px;}
+.mini-bar-total{font-size:13px;font-weight:700;font-family:'JetBrains Mono',monospace;text-align:right;color:var(--text);flex-shrink:0;}
+.mini-bar-col-wrap{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;}
+.mini-bar-fallback{display:flex;justify-content:space-between;padding:0 2px;}
+.mini-bar-fall-mid{font-size:11px;font-weight:700;color:#38bdf8;font-family:'JetBrains Mono',monospace;}
+.mini-bar-fall-end{font-size:11px;font-weight:700;color:#4ade80;font-family:'JetBrains Mono',monospace;margin-left:auto;}
 /* Sum list */
 .sum-list{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;}
 .sum-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--border);}
@@ -1750,7 +1756,7 @@ function renderSvList(){
   el.innerHTML=`<div class="exp-section">
     <div class="exp-section-hdr">
       <div class="section-label">Expenses | ${label}${badges}</div>
-      <div style="display:flex;align-items:center;gap:6px">
+      <div style="display:flex;align-items:stretch;gap:6px;flex:1;max-width:200px;margin-left:8px">
         <button class="exp-zero-toggle${showZeroItems?' active':''}" onclick="toggleZeroItems()" title="${showZeroItems?'Hide zero-amount items':'Show zero-amount items'}">${zeroToggleLabel}</button>
         <button class="exp-add-btn" onclick="dashAddExpense()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
@@ -1978,26 +1984,30 @@ function renderSummary(){
   months.forEach(m=>m.items.forEach(it=>{expMap[it.name]=(expMap[it.name]||0)+it.mid+it.end;}));
   const topExp=Object.entries(expMap).sort((a,b)=>b[1]-a[1]).slice(0,5);
 
-  /* mini bar chart — mid net and end net as separate rows per month */
-  const maxAbsNet=Math.max(...months.flatMap(m=>[Math.abs(netMid(m)),Math.abs(netEnd(m))]),1);
+  /* Option K — composition split bar: MID | END amounts in one full-width bar */
   const barRows=months.map(m=>{
     const nm=netMid(m),ne=netEnd(m);
-    const pm=Math.round(Math.abs(nm)/maxAbsNet*100),pe=Math.round(Math.abs(ne)/maxAbsNet*100);
-    const cm=nm>=0?'var(--green)':'var(--red)',ce=ne>=0?'var(--green)':'var(--red)';
+    const absM=Math.abs(nm),absE=Math.abs(ne),tot=absM+absE||1;
+    const mPct=(absM/tot*100).toFixed(1),ePct=(100-parseFloat(mPct)).toFixed(1);
+    const cm=nm>=0?'linear-gradient(90deg,#0891b2,#38bdf8)':'linear-gradient(90deg,#9f1239,#f87171)';
+    const ce=ne>=0?'linear-gradient(90deg,#15803d,#4ade80)':'linear-gradient(90deg,#7f1d1d,#fca5a5)';
+    const mFits=parseFloat(mPct)>12, eFits=parseFloat(ePct)>12;
+    const mLbl=mFits?fmtShort(nm):'', eLbl=eFits?fmtShort(ne):'';
+    const totalColor=nm+ne>=0?'var(--green)':'var(--red)';
+    const fallback=(!mFits||!eFits)?`<div class="mini-bar-fallback">
+      ${!mFits?`<span class="mini-bar-fall-mid">${fmtShort(nm)}</span>`:''}
+      ${!eFits?`<span class="mini-bar-fall-end">${fmtShort(ne)}</span>`:''}
+    </div>`:'';
     return`<div class="mini-bar-row">
       <div class="mini-bar-month">${m.month.slice(0,3)}</div>
-      <div class="mini-bar-col">
-        <div class="mini-bar-sub">
-          <div class="mini-bar-sub-lbl">Mid</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:${pm}%;background:${cm}"></div></div>
-          <div class="mini-bar-val" style="color:${cm}">${fmtShort(nm)}</div>
+      <div class="mini-bar-col-wrap">
+        <div class="mini-bar-split">
+          <div class="mini-bar-seg" style="width:${mPct}%;background:${cm}"><span class="mini-bar-seg-lbl">${mLbl}</span></div>
+          <div class="mini-bar-seg" style="width:${ePct}%;background:${ce}"><span class="mini-bar-seg-lbl">${eLbl}</span></div>
         </div>
-        <div class="mini-bar-sub">
-          <div class="mini-bar-sub-lbl">End</div>
-          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:${pe}%;background:${ce}"></div></div>
-          <div class="mini-bar-val" style="color:${ce}">${fmtShort(ne)}</div>
-        </div>
+        ${fallback}
       </div>
+      <div class="mini-bar-total" style="color:${totalColor}">${fmtShort(nm+ne)}</div>
     </div>`;
   }).join('');
 
@@ -2026,7 +2036,11 @@ function renderSummary(){
     </div>
 
     ${months.length>1?`<div class="sum-section">
-      <div class="sum-section-label">Net Pay/Balance Per Month</div>
+      <div class="sum-section-label">Net Pay/Balance Per Month <span class="mini-bar-yr-badge">${sumYear}</span></div>
+      <div class="mini-bar-legend">
+        <span class="mini-bar-legend-dot" style="background:linear-gradient(90deg,#0891b2,#38bdf8)"></span><span class="mini-bar-legend-lbl">MID amount</span>
+        <span class="mini-bar-legend-dot" style="background:linear-gradient(90deg,#15803d,#4ade80);margin-left:12px"></span><span class="mini-bar-legend-lbl">END amount</span>
+      </div>
       <div class="mini-bar-list">${barRows}</div>
     </div>`:''}
 
