@@ -13,9 +13,9 @@
 <meta property="og:description" content="ExQ-PH — track salary, expenses and savings.">
 <meta property="og:type" content="website">
 <title>ExQ-PH v6</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='80' height='80' rx='18' fill='%230e1815'/%3E%3Ccircle cx='38' cy='38' r='20' fill='none' stroke='%2306b6d4' stroke-width='5' opacity='0.3'/%3E%3Ccircle cx='38' cy='38' r='20' fill='none' stroke='%2306b6d4' stroke-width='5' stroke-dasharray='88 38' transform='rotate(-90 38 38)'/%3E%3Cline x1='52' y1='52' x2='62' y2='62' stroke='%234ade80' stroke-width='5' stroke-linecap='round'/%3E%3Ctext x='24' y='30' font-size='13' font-weight='900' fill='%2367e8f9' font-family='monospace'%3EEx%3C/text%3E%3Ctext x='55' y='22' font-size='10' font-weight='800' fill='%234ade80' font-family='monospace'%3EPH%3C/text%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='80' height='80' rx='18' fill='%231c2128'/%3E%3Ccircle cx='35' cy='35' r='22' fill='%2358a6ff' fill-opacity='0.07'/%3E%3Ccircle cx='35' cy='35' r='18' fill='none' stroke='%23000' stroke-opacity='0.35' stroke-width='9'/%3E%3Ccircle cx='35' cy='35' r='22' fill='none' stroke='%2358a6ff' stroke-width='5'/%3E%3Ccircle cx='27' cy='24' r='4' fill='white' fill-opacity='0.22'/%3E%3Cline x1='51' y1='51' x2='65' y2='65' stroke='%2358a6ff' stroke-width='5' stroke-linecap='round'/%3E%3Ctext x='35' y='42' font-size='18' font-weight='900' fill='white' font-family='Arial,sans-serif' text-anchor='middle'%3EEx%3C/text%3E%3C/svg%3E">
 <link rel="apple-touch-icon" id="appleTouchIcon" href="">
-<script>document.documentElement.dataset.theme=localStorage.getItem('jetiq_theme')||'forest';</script>
+<script>document.documentElement.dataset.theme=localStorage.getItem('jetiq_theme')||'slate';</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
@@ -45,70 +45,18 @@ html[data-theme="slate"]{
   --text:#cdd9e5;--text2:#8b949e;--muted:#6e7681;--dim:#8b949e; color-scheme:dark;
 }
 html[data-theme="light"]{
-  --bg:#f0faf5;--card:#ffffff;--card2:#f5faf7;--card3:#e8f4ee;
-  --border:#cde0d6;--border2:#b0d0c0;
-  --accent:#0891b2;--accent2:#06b6d4;--accent-soft:rgba(8,145,178,.12);
-  --green:#16a34a;--green-soft:rgba(22,163,74,.12);
-  --red:#dc2626;--red-soft:rgba(220,38,38,.11);
-  --amber:#d97706;--amber-soft:rgba(217,119,6,.11);
-  --purple:#7c3aed;--purple-soft:rgba(124,58,237,.10);
-  --text:#0d2418;--text2:#234d38;--muted:#4a9070;--dim:#5a9a78; color-scheme:light;
-}
-html[data-theme="cream"]{
-  --bg:#faf7f2;--card:#ffffff;--card2:#f5f0e8;--card3:#ede8dd;
-  --border:#ddd6c8;--border2:#c9c0b0;
-  --accent:#0f766e;--accent2:#14b8a6;--accent-soft:rgba(15,118,110,.12);
-  --green:#15803d;--green-soft:rgba(21,128,61,.12);
-  --red:#b91c1c;--red-soft:rgba(185,28,28,.11);
-  --amber:#b45309;--amber-soft:rgba(180,83,9,.11);
-  --purple:#6d28d9;--purple-soft:rgba(109,40,217,.10);
-  --text:#1c1917;--text2:#44403c;--muted:#78716c;--dim:#a8a29e; color-scheme:light;
-}
-html[data-theme="ocean"]{
-  --bg:#010e1f;--card:#051828;--card2:#041320;--card3:#092035;
-  --border:#0c2d4a;--border2:#103a60;
-  --accent:#38bdf8;--accent2:#7dd3fc;--accent-soft:rgba(56,189,248,.14);
-  --green:#34d399;--green-soft:rgba(52,211,153,.13);
-  --red:#f87171;--red-soft:rgba(248,113,133,.13);
-  --amber:#fbbf24;--amber-soft:rgba(251,191,36,.13);
-  --purple:#a78bfa;--purple-soft:rgba(167,139,250,.12);
-  --text:#e0f2fe;--text2:#93c5fd;--muted:#1e6a8a;--dim:#2e8fb0; color-scheme:dark;
-}
-html[data-theme="midnight"]{
-  --bg:#0c0b1a;--card:#121028;--card2:#0e0c22;--card3:#1c1a38;
-  --border:#1e1c3a;--border2:#2d2a55;
-  --accent:#a78bfa;--accent2:#c4b5fd;--accent-soft:rgba(167,139,250,.15);
-  --green:#4ade80;--green-soft:rgba(74,222,128,.13);
-  --red:#f87171;--red-soft:rgba(248,113,133,.13);
-  --amber:#fbbf24;--amber-soft:rgba(251,191,36,.13);
-  --purple:#f0abfc;--purple-soft:rgba(240,171,252,.12);
-  --text:#ede9fe;--text2:#c4b5fd;--muted:#5b4ea5;--dim:#7c6fd4; color-scheme:dark;
-}
-html[data-theme="ember"]{
-  --bg:#120a01;--card:#1e1202;--card2:#180e01;--card3:#2c1c04;
-  --border:#3a2206;--border2:#4d3008;
-  --accent:#f59e0b;--accent2:#fbbf24;--accent-soft:rgba(245,158,11,.14);
-  --green:#34d399;--green-soft:rgba(52,211,153,.13);
-  --red:#f87171;--red-soft:rgba(248,113,133,.13);
-  --amber:#f59e0b;--amber-soft:rgba(245,158,11,.13);
-  --purple:#c084fc;--purple-soft:rgba(192,132,252,.12);
-  --text:#fffbeb;--text2:#fde68a;--muted:#92570d;--dim:#b47b15; color-scheme:dark;
-}
-html[data-theme="violet"]{
-  --bg:#f5f3ff;--card:#ffffff;--card2:#f0ecff;--card3:#e8e2ff;
-  --border:#ddd6fe;--border2:#c4b5fd;
-  --accent:#7c3aed;--accent2:#8b5cf6;--accent-soft:rgba(124,58,237,.11);
-  --green:#15803d;--green-soft:rgba(21,128,61,.12);
-  --red:#b91c1c;--red-soft:rgba(185,28,28,.11);
-  --amber:#b45309;--amber-soft:rgba(180,83,9,.11);
-  --purple:#6d28d9;--purple-soft:rgba(109,40,217,.10);
-  --text:#1e1b4b;--text2:#3730a3;--muted:#5b21b6;--dim:#7c3aed; color-scheme:light;
+  --bg:#eef2f7;--card:#f8fafc;--card2:#f0f4f8;--card3:#e6ecf3;
+  --border:#cdd5e0;--border2:#b5c0d0;
+  --accent:#58a6ff;--accent2:#79c0ff;--accent-soft:rgba(88,166,255,.15);
+  --green:#1a7f37;--green-soft:rgba(26,127,55,.12);
+  --red:#cf222e;--red-soft:rgba(207,34,46,.11);
+  --amber:#bf8700;--amber-soft:rgba(191,135,0,.11);
+  --purple:#8250df;--purple-soft:rgba(130,80,223,.10);
+  --text:#1a2436;--text2:#3d5068;--muted:#647488;--dim:#8a9db0; color-scheme:light;
 }
 /* light-theme refinements */
-html[data-theme="light"] #toast,html[data-theme="cream"] #toast,
-html[data-theme="violet"] #toast{box-shadow:0 4px 20px rgba(0,0,0,.12);}
-html[data-theme="light"] .hpt-btn.active,html[data-theme="cream"] .hpt-btn.active,
-html[data-theme="violet"] .hpt-btn.active{box-shadow:0 1px 4px rgba(0,0,0,.12);}
+html[data-theme="light"] #toast{box-shadow:0 4px 20px rgba(0,0,0,.12);}
+html[data-theme="light"] .hpt-btn.active{box-shadow:0 1px 4px rgba(0,0,0,.12);}
 /* ── THEME PICKER ───────────────────────────── */
 .theme-picker{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:0 16px 4px;}
 .theme-swatch{display:flex;flex-direction:row;align-items:center;gap:10px;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif;}
@@ -141,14 +89,14 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 
 /* ── SCREENS ───────────────────────────────── */
 #screens{flex:1;position:relative;min-height:0;}
-.screen{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--nav-h)+32px);display:none;}
+.screen{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--nav-h)+50px);display:none;}
 .screen.active{display:block;}
 
 /* ── BOTTOM NAV ────────────────────────────── */
-.bottom-nav{height:var(--nav-h);background:var(--card);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 8px;padding-bottom:env(safe-area-inset-bottom);flex-shrink:0;position:relative;z-index:50;}
+.bottom-nav{height:var(--nav-h);background:var(--card);border:1px solid var(--border);border-radius:20px;margin:0 12px 10px;display:flex;align-items:center;padding:0 8px;padding-bottom:env(safe-area-inset-bottom);flex-shrink:0;position:relative;z-index:50;}
 .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px 0;color:var(--muted);transition:color .15s;position:relative;}
-.nav-item.active{color:var(--accent);}
-.nav-item.active::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:28px;height:2px;background:var(--accent);border-radius:0 0 2px 2px;}
+.nav-item.active{color:#fff;background:var(--accent);border-radius:12px;}
+.nav-item.active::before{display:none;}
 .nav-icon{width:28px;height:28px;display:flex;align-items:center;justify-content:center;}
 .nav-label{font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;}
 .nav-urgency-dot{position:absolute;top:7px;right:calc(50% - 16px);width:8px;height:8px;border-radius:50%;background:var(--red);border:2px solid var(--bg);pointer-events:none;}
@@ -171,7 +119,9 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
     gap:2px;
     padding:16px 10px;
     padding-bottom:16px;
-    border-top:none;
+    border:none;
+    border-radius:0;
+    margin:0;
     border-right:1px solid var(--border);
     flex-shrink:0;
     overflow-y:auto;
@@ -723,12 +673,18 @@ input[type=file]{display:none;}
     <div class="header-left">
       <div class="header-logo">
         <svg width="34" height="34" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
-          <rect width="80" height="80" rx="18" fill="#0e1815"/>
-          <circle cx="38" cy="38" r="20" fill="none" stroke="#06b6d4" stroke-width="5" opacity="0.3"/>
-          <circle cx="38" cy="38" r="20" fill="none" stroke="#06b6d4" stroke-width="5" stroke-dasharray="88 38" transform="rotate(-90 38 38)"/>
-          <line x1="52" y1="52" x2="62" y2="62" stroke="#4ade80" stroke-width="5" stroke-linecap="round"/>
-          <text x="24" y="30" font-size="13" font-weight="900" fill="#67e8f9" font-family="monospace">Ex</text>
-          <text x="55" y="22" font-size="10" font-weight="800" fill="#4ade80" font-family="monospace">PH</text>
+          <defs>
+            <radialGradient id="hg" cx="45%" cy="40%" r="60%">
+              <stop offset="25%" stop-color="#58a6ff" stop-opacity="0.07"/>
+              <stop offset="100%" stop-color="#000" stop-opacity="0.5"/>
+            </radialGradient>
+          </defs>
+          <rect width="80" height="80" rx="18" fill="#1c2128"/>
+          <circle cx="35" cy="35" r="22" fill="url(#hg)"/>
+          <circle cx="35" cy="35" r="22" fill="none" stroke="#58a6ff" stroke-width="5"/>
+          <ellipse cx="27" cy="25" rx="6" ry="3.5" fill="white" fill-opacity="0.22" transform="rotate(-40 27 25)"/>
+          <line x1="51" y1="51" x2="65" y2="65" stroke="#58a6ff" stroke-width="5" stroke-linecap="round"/>
+          <text x="35" y="42" font-size="18" font-weight="900" fill="white" font-family="Arial,sans-serif" text-anchor="middle">Ex</text>
         </svg>
       </div>
       <div>
@@ -738,6 +694,7 @@ input[type=file]{display:none;}
     </div>
     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;">
       <div style="display:flex;align-items:center;gap:8px;">
+        <button class="header-action" id="themeToggleBtn" onclick="toggleTheme()" title="Toggle theme"></button>
         <button class="header-action" id="hideAmountsBtn" onclick="toggleHideAmounts()" title="Hide amounts"></button>
         <button class="header-action" id="fbAuthBtn" onclick="fbToggleAuth()" title="Sign in to sync" style="position:relative;">
           <span id="fbOnlineDot" style="display:none;position:absolute;top:2px;right:2px;width:7px;height:7px;border-radius:50%;background:var(--green);border:1.5px solid var(--bg);pointer-events:none;"></span>
@@ -899,41 +856,6 @@ input[type=file]{display:none;}
           <div class="data-btn-arrow">›</div>
         </div>
       </div>
-      <!-- Theme picker -->
-      <div class="settings-section-title">Theme</div>
-      <div class="theme-picker">
-        <button class="theme-swatch" data-theme="midnight" onclick="setTheme('midnight')">
-          <div class="ts-chk"></div>
-          <div class="ts-preview" style="background:#4ade80"></div>
-          <span>Midnight</span>
-        </button>
-        <button class="theme-swatch" data-theme="slate" onclick="setTheme('slate')">
-          <div class="ts-chk"></div>
-          <div class="ts-preview" style="background:#e3b341"></div>
-          <span>Slate</span>
-        </button>
-        <button class="theme-swatch" data-theme="ocean" onclick="setTheme('ocean')">
-          <div class="ts-chk"></div>
-          <div class="ts-preview" style="background:#38bdf8"></div>
-          <span>Ocean</span>
-        </button>
-        <button class="theme-swatch" data-theme="forest" onclick="setTheme('forest')">
-          <div class="ts-chk"></div>
-          <div class="ts-preview" style="background:#4ade80"></div>
-          <span>Forest</span>
-        </button>
-        <button class="theme-swatch" data-theme="violet" onclick="setTheme('violet')">
-          <div class="ts-chk"></div>
-          <div class="ts-preview" style="background:#818cf8"></div>
-          <span>Violet</span>
-        </button>
-        <button class="theme-swatch" data-theme="ember" onclick="setTheme('ember')">
-          <div class="ts-chk"></div>
-          <div class="ts-preview" style="background:#f59e0b"></div>
-          <span>Ember</span>
-        </button>
-      </div>
-
       <!-- Category management -->
       <div class="settings-section-title">Categories</div>
       <div id="catList" class="cat-list"></div>
@@ -965,12 +887,18 @@ input[type=file]{display:none;}
   <div class="bottom-nav">
     <div class="sidebar-logo">
       <svg width="30" height="30" viewBox="0 0 80 80" style="border-radius:8px;flex-shrink:0">
-        <rect width="80" height="80" rx="18" fill="#0e1815"/>
-        <circle cx="38" cy="38" r="20" fill="none" stroke="#06b6d4" stroke-width="5" opacity="0.3"/>
-        <circle cx="38" cy="38" r="20" fill="none" stroke="#06b6d4" stroke-width="5" stroke-dasharray="88 38" transform="rotate(-90 38 38)"/>
-        <line x1="52" y1="52" x2="62" y2="62" stroke="#4ade80" stroke-width="5" stroke-linecap="round"/>
-        <text x="24" y="30" font-size="13" font-weight="900" fill="#67e8f9" font-family="monospace">Ex</text>
-        <text x="55" y="22" font-size="10" font-weight="800" fill="#4ade80" font-family="monospace">PH</text>
+        <defs>
+          <radialGradient id="sg" cx="45%" cy="40%" r="60%">
+            <stop offset="25%" stop-color="#58a6ff" stop-opacity="0.07"/>
+            <stop offset="100%" stop-color="#000" stop-opacity="0.5"/>
+          </radialGradient>
+        </defs>
+        <rect width="80" height="80" rx="18" fill="#1c2128"/>
+        <circle cx="35" cy="35" r="22" fill="url(#sg)"/>
+        <circle cx="35" cy="35" r="22" fill="none" stroke="#58a6ff" stroke-width="5"/>
+        <ellipse cx="27" cy="25" rx="6" ry="3.5" fill="white" fill-opacity="0.22" transform="rotate(-40 27 25)"/>
+        <line x1="51" y1="51" x2="65" y2="65" stroke="#58a6ff" stroke-width="5" stroke-linecap="round"/>
+        <text x="35" y="42" font-size="18" font-weight="900" fill="white" font-family="Arial,sans-serif" text-anchor="middle">Ex</text>
       </svg>
       <span class="sidebar-logo-text">ExQ-PH</span>
     </div>
@@ -1216,34 +1144,44 @@ input[type=file]{display:none;}
     ctx.lineTo(sz,sz-r);ctx.quadraticCurveTo(sz,sz,sz-r,sz);
     ctx.lineTo(r,sz);ctx.quadraticCurveTo(0,sz,0,sz-r);
     ctx.lineTo(0,r);ctx.quadraticCurveTo(0,0,r,0);ctx.closePath();
-    ctx.fillStyle='#0e1815';ctx.fill();
-    // circle track
-    ctx.beginPath();ctx.arc(sz*.475,sz*.475,sz*.25,0,2*Math.PI);
-    ctx.strokeStyle='rgba(6,182,212,0.3)';ctx.lineWidth=sz*.0625;ctx.lineCap='round';ctx.stroke();
-    // partial arc
-    ctx.beginPath();ctx.arc(sz*.475,sz*.475,sz*.25,-Math.PI/2,-Math.PI/2+4.396);
-    ctx.strokeStyle='#06b6d4';ctx.lineWidth=sz*.0625;ctx.lineCap='round';ctx.stroke();
-    // Q tail
-    ctx.beginPath();ctx.moveTo(sz*.65,sz*.65);ctx.lineTo(sz*.775,sz*.775);
-    ctx.strokeStyle='#4ade80';ctx.lineWidth=sz*.0625;ctx.lineCap='round';ctx.stroke();
-    // Ex text
-    ctx.fillStyle='#67e8f9';ctx.font=`900 ${sz*.1625}px monospace`;
-    ctx.textAlign='left';ctx.textBaseline='alphabetic';ctx.fillText('Ex',sz*.3,sz*.375);
-    // PH text
-    ctx.fillStyle='#4ade80';ctx.font=`800 ${sz*.125}px monospace`;
-    ctx.fillText('PH',sz*.6875,sz*.275);
+    ctx.fillStyle='#1c2128';ctx.fill();
+    // inner shadow gradient fill
+    const cx=sz*.4375,cy=sz*.4375,cr=sz*.275;
+    const g=ctx.createRadialGradient(cx,cy*.95,cr*.2,cx,cy,cr);
+    g.addColorStop(0.25,'rgba(88,166,255,0.07)');g.addColorStop(1,'rgba(0,0,0,0.5)');
+    ctx.beginPath();ctx.arc(cx,cy,cr,0,2*Math.PI);ctx.fillStyle=g;ctx.fill();
+    // ring
+    ctx.beginPath();ctx.arc(cx,cy,cr,0,2*Math.PI);
+    ctx.strokeStyle='#58a6ff';ctx.lineWidth=sz*.0625;ctx.lineCap='round';ctx.stroke();
+    // specular highlight
+    ctx.save();ctx.translate(sz*.3375,sz*.3125);ctx.rotate(-0.7);
+    ctx.beginPath();ctx.ellipse(0,0,sz*.075,sz*.044,0,0,2*Math.PI);
+    ctx.fillStyle='rgba(255,255,255,0.22)';ctx.fill();ctx.restore();
+    // handle
+    ctx.beginPath();ctx.moveTo(sz*.6375,sz*.6375);ctx.lineTo(sz*.8125,sz*.8125);
+    ctx.strokeStyle='#58a6ff';ctx.lineWidth=sz*.0625;ctx.lineCap='round';ctx.stroke();
+    // Ex text centered in circle
+    ctx.fillStyle='#ffffff';ctx.font=`900 ${sz*.225}px Arial,sans-serif`;
+    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('Ex',cx,cy);
     const link=document.getElementById('appleTouchIcon');
     if(link)link.href=c.toDataURL('image/png');
   }catch(e){}
 })();
 
 /* ── THEME ────────────────────────────────── */
-const THEME_META={forest:'#080f0c',slate:'#1c2128',light:'#f0faf5',cream:'#faf7f2',ocean:'#010e1f',midnight:'#0c0b1a',ember:'#120a01',violet:'#f5f3ff'};
+const THEME_META={slate:'#1c2128',light:'#eef2f7'};
+const _ICON_SUN='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+const _ICON_MOON='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
 function setTheme(name){
   document.documentElement.dataset.theme=name;
-  document.querySelector('meta[name="theme-color"]').content=THEME_META[name]||'#080f0c';
+  document.querySelector('meta[name="theme-color"]').content=THEME_META[name]||'#1c2128';
   localStorage.setItem('jetiq_theme',name);
   document.querySelectorAll('.theme-swatch').forEach(el=>el.classList.toggle('active',el.dataset.theme===name));
+  const btn=document.getElementById('themeToggleBtn');
+  if(btn) btn.innerHTML=name==='slate'?_ICON_SUN:_ICON_MOON;
+}
+function toggleTheme(){
+  setTheme(document.documentElement.dataset.theme==='slate'?'light':'slate');
 }
 
 /* ── CONSTANTS ────────────────────────────── */
@@ -2677,7 +2615,7 @@ function initSelect(){
   const sysIdx=(data[sys.year]||[]).findIndex(m=>m.month===sys.monthName);
   if(sysIdx!==-1){curYear=sys.year;curMonthIdx=sysIdx;}
   else if(years.length){curYear=years[years.length-1];curMonthIdx=(data[years[years.length-1]]||[]).length-1;}
-  setTheme(localStorage.getItem('jetiq_theme')||'forest');
+  setTheme(localStorage.getItem('jetiq_theme')||'slate');
   updateHeaderSub();rebuildNavControls();renderOverview();renderMonths();renderDataScreen();checkBackupReminder();
 }
 
