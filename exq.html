@@ -329,12 +329,12 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .donut-wrap{margin:0 16px 40px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;}
 .donut-title{font-size:14px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
 .donut-inner{display:flex;align-items:center;gap:16px;}
-.donut-legend{flex:1;display:flex;flex-direction:column;gap:9px;}
-.donut-legend-item{display:flex;align-items:center;gap:8px;}
+.donut-legend{flex:1;min-width:0;display:flex;flex-direction:column;gap:9px;}
+.donut-legend-item{display:flex;align-items:center;gap:8px;min-width:0;}
 .donut-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
-.donut-legend-name{font-size:15px;color:var(--dim);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.donut-legend-name{font-size:15px;color:var(--dim);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .donut-legend-pct{font-size:15px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--muted);width:36px;text-align:right;flex-shrink:0;}
-.donut-legend-amt{font-size:15px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--text);width:52px;text-align:right;flex-shrink:0;padding-right:10px;}
+.donut-legend-amt{font-size:15px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--text);min-width:0;text-align:right;flex-shrink:0;white-space:nowrap;}
 
 /* ── NEW DASHBOARD ─────────────────────────── */
 .period-row{padding:10px 16px 0;display:flex;}
@@ -1289,6 +1289,7 @@ const CHART_COLORS=['#06b6d4','#4ade80','#fb923c','#f87171','#818cf8','#34d3e3',
 let amountsHidden=localStorage.getItem('jetiq_hide_amounts')==='1';
 const fmt=v=>amountsHidden?'₱ ••••':'₱'+parseFloat(v||0).toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmtShort=v=>{if(amountsHidden)return'₱ ••••';const n=parseFloat(v||0);if(Math.abs(n)>=1000000)return'₱'+(n/1000000).toFixed(1)+'M';if(Math.abs(n)>=1000)return'₱'+(n/1000).toFixed(0)+'K';return fmt(v);};
+const fmtLgd=v=>{if(amountsHidden)return'₱ ••••';const n=parseFloat(v||0);if(Math.abs(n)>=1000)return fmtShort(v);return'₱'+Math.abs(n).toFixed(0);};
 function fmtInput(n){if(n===''||n===null||n===undefined||isNaN(+n))return'';const p=(+n).toFixed(2).split('.');p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,',');return p.join('.');}
 function amtFocus(el){el.value=el.value.replace(/,/g,'');}
 function amtBlur(el){const n=parseFloat(el.value.replace(/,/g,''));el.value=isNaN(n)||el.value===''?'':fmtInput(n);}
@@ -1590,7 +1591,7 @@ function renderDonut(items,isMid){
     paths+=`<path d="${d}" fill="${color}" style="cursor:pointer;transition:opacity .15s" onmouseenter="_showDTip(${i})" onmouseleave="_hideDTip()"/>`;
     angle+=pct*2*Math.PI;
     const pctLbl=Math.round(pct*100);
-    lgd+=`<div class="donut-legend-item"><div class="donut-dot" style="background:${color}"></div><div class="donut-legend-name">${esc(name)}</div><div class="donut-legend-pct">${pctLbl}%</div><div class="donut-legend-amt">${fmtShort(amt)}</div></div>`;
+    lgd+=`<div class="donut-legend-item"><div class="donut-dot" style="background:${color}"></div><div class="donut-legend-name">${esc(name)}</div><div class="donut-legend-pct">${pctLbl}%</div><div class="donut-legend-amt">${fmtLgd(amt)}</div></div>`;
   });
   paths+=`<text id="dtName" x="75" y="67" text-anchor="middle" font-size="8.5" fill="#94a3b8" opacity="0" style="pointer-events:none"></text>`;
   paths+=`<text id="dtPct"  x="75" y="80" text-anchor="middle" font-size="14"  font-weight="800" fill="#e2e8f0" opacity="0" style="pointer-events:none"></text>`;
@@ -1636,16 +1637,18 @@ function renderSvList(){
   const groups={};categories.forEach(c=>groups[c.name]=[]);
   m.items.forEach((it,idx)=>{const cat=getCategory(it);if(!groups[cat])groups[cat]=[];groups[cat].push({it,idx});});
 
-  /* count statuses for filter chips — per active period */
+  /* count statuses for filter chips — per active period, skip zero-amount items */
   const statusCounts={pending:0,paid:0};
   m.items.forEach(it=>{
+    if((isMid?it.mid:it.end)===0)return;
     const s=isMid?(it.midStatus||'pending'):(it.endStatus||'pending');
     statusCounts[s==='paid'?'paid':'pending']++;
   });
 
-  /* urgency counts for header badges — scans all items regardless of filter */
+  /* urgency counts for header badges — skip zero-amount items */
   let overdueCount=0,soonCount=0;
   m.items.forEach(it=>{
+    if((isMid?it.mid:it.end)===0)return;
     const tgt=isMid?it.midTarget:it.endTarget;
     const st=isMid?(it.midStatus||'pending'):(it.endStatus||'pending');
     const u=tgtUrgency(tgt,st);
