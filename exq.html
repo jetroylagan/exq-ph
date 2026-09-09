@@ -811,15 +811,9 @@ input[type=file]{display:none;}
         <div class="header-sub" id="headerSub">Loading…</div>
       </div>
     </div>
-    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;">
-      <div style="display:flex;align-items:center;gap:8px;">
-        <button class="header-action" id="themeToggleBtn" onclick="toggleTheme()" title="Toggle theme"></button>
-        <button class="header-action" id="hideAmountsBtn" onclick="toggleHideAmounts()" title="Hide amounts"></button>
-        <button class="header-action" id="fbAuthBtn" onclick="fbToggleAuth()" title="Sign in to sync" style="position:relative;">
-          <span id="fbOnlineDot" style="display:none;position:absolute;top:2px;right:2px;width:7px;height:7px;border-radius:50%;background:var(--green);border:1.5px solid var(--bg);pointer-events:none;"></span>
-        </button>
-      </div>
-      <div id="fbStatusLabel" style="display:none;font-size:9px;font-weight:600;color:var(--green);letter-spacing:.3px;white-space:nowrap;padding-right:2px;"></div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <button class="header-action" id="themeToggleBtn" onclick="toggleTheme()" title="Toggle theme"></button>
+      <button class="header-action" id="hideAmountsBtn" onclick="toggleHideAmounts()" title="Hide amounts"></button>
     </div>
   </div>
 
@@ -953,6 +947,15 @@ input[type=file]{display:none;}
       <div class="screen-header" style="padding-bottom:4px">
         <div class="screen-title">More</div>
       </div>
+      <div class="settings-section-title">Cloud Sync</div>
+      <div class="data-actions" style="margin:0 16px 14px;">
+        <div class="data-btn" id="fbSyncRow" onclick="fbToggleAuth()">
+          <div class="data-btn-icon" id="fbSyncIcon" style="background:var(--accent-soft)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg></div>
+          <div class="data-btn-info"><div class="data-btn-title" id="fbSyncTitle">Sign In to Sync</div><div class="data-btn-desc" id="fbSyncDesc">Backup and sync data across devices</div></div>
+          <div class="data-btn-arrow">›</div>
+        </div>
+      </div>
+
       <div id="backupBanner" style="display:none;align-items:center;gap:10px;margin:0 16px 14px;background:rgba(251,146,60,.12);border:1px solid rgba(251,146,60,.3);border-radius:var(--radius-sm);padding:12px 14px;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fb923c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         <div style="flex:1"><div style="font-size:12px;font-weight:800;color:#fb923c" class="bb-msg">Back up your data!</div><div style="font-size:10px;color:var(--dim);margin-top:2px">Tap Backup below to save your data.</div></div>
@@ -1283,6 +1286,21 @@ input[type=file]{display:none;}
       <div class="sheet-actions">
         <button class="btn-full btn-cancel" onclick="closeSheet('confirmSheet')">Cancel</button>
         <button class="btn-full btn-confirm" id="cs-confirm-btn" onclick="doConfirmAction()">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sheet-backdrop" id="syncSheet">
+    <div class="sheet">
+      <div class="sheet-handle"></div>
+      <div id="syncSheetBody">
+        <h3>Sync with Cloud</h3>
+        <p style="font-size:13px;color:var(--dim);margin:10px 0 16px;line-height:1.5">Enter your email — we'll send a one-time sign-in link. No password needed.</p>
+        <div class="field"><label>Email</label><input id="sync-email" type="email" placeholder="you@example.com" inputmode="email" autocomplete="email"/></div>
+        <div class="sheet-actions">
+          <button class="btn-full btn-cancel" onclick="closeSheet('syncSheet')">Cancel</button>
+          <button class="btn-full btn-confirm" id="syncSendBtn" onclick="fbSendMagicLink()">Send Link →</button>
+        </div>
       </div>
     </div>
   </div>
@@ -2719,9 +2737,8 @@ function parseRows(rows){
         if(rowMonthLabel(row))break; /* start of next month block */
         const name=row[0]!=null?String(row[0]).trim():null;
         if(!name){i++;continue;}
-        if(name.toLowerCase()==='total'){i++;continue;}
+        if(/^(total|totalbudget|settled|settled\(paid\)|payable|net|netpay)$/i.test(name)){i++;continue;}
         if(name==='ProjectedNetPay'){pMid=parseFloat(row[1])||0;pEnd=parseFloat(endTargetCol>=0?row[4]:row[2])||0;i++;continue;}
-        if(name==='NetPay'){i++;continue;}
         const midAmt=parseFloat(row[1])||0;
         const endAmt=parseFloat(endTargetCol>=0?row[4]:row[2])||0;
         const midTgt=midTargetCol>=0?parseDateCell(row[midTargetCol]):'';
@@ -2795,10 +2812,11 @@ function doExportExcel(){
       rows.push([null,m.month+', '+year,null,null,' - ']);
       rows.push(['Items','Mid','Mid Status','MidTarget','End','End Status','EndTarget','Category','Notes']);
       m.items.forEach(it=>rows.push([it.name,it.mid,it.midStatus||'pending',it.midTarget||'',it.end,it.endStatus||'pending',it.endTarget||'',it.category||getCategory(it),it.notes]));
-      rows.push(['TotalBudget',totMid(m),null,null,totEnd(m),null,null,null,null]);
-      rows.push(['Settled(Paid)',spentMid(m),null,null,spentEnd(m),null,null,null,null]);
+      rows.push(['Settled',spentMid(m),null,null,spentEnd(m),null,null,null,null]);
+      rows.push(['Payable',budgetMid(m),null,null,budgetEnd(m),null,null,null,null]);
+      rows.push(['Total',totMid(m),null,null,totEnd(m),null,null,null,null]);
       rows.push(['ProjectedNetPay',m.projectedNetPayMid,null,null,m.projectedNetPayEnd,null,null,null,null]);
-      rows.push(['NetPay',netMid(m),null,null,netEnd(m),null,null,null,null]);
+      rows.push(['Net',m.projectedNetPayMid-spentMid(m)-budgetMid(m),null,null,m.projectedNetPayEnd-spentEnd(m)-budgetEnd(m),null,null,null,null]);
       rows.push([]);
     });
     const ws=XLSX.utils.aoa_to_sheet(rows);
@@ -3536,26 +3554,43 @@ function toggleHideAmounts(){
 }
 
 /* ── FIREBASE BRIDGE ──────────────────────── */
-let _fbSyncing=false,_fbSaveTimer=null;
-function _debouncedFbSave(){clearTimeout(_fbSaveTimer);_fbSaveTimer=setTimeout(()=>{if(window._fbSave)window._fbSave(data,categories);},2000);}
+let _fbSyncing=false,_fbSaveTimer=null,_lastSyncTime=null;
+try{const s=localStorage.getItem('jetiq_last_fb_sync');if(s)_lastSyncTime=new Date(s);}catch(e){}
+function _fmtSyncAge(d){
+  if(!d)return'Never';
+  const s=Math.floor((Date.now()-d.getTime())/1000);
+  if(s<60)return'Just now';
+  if(s<3600)return Math.floor(s/60)+'m ago';
+  if(s<86400)return Math.floor(s/3600)+'h ago';
+  return d.toLocaleDateString();
+}
+function _debouncedFbSave(){
+  clearTimeout(_fbSaveTimer);
+  _fbSaveTimer=setTimeout(async()=>{
+    if(window._fbSave){
+      await window._fbSave(data,categories);
+      _lastSyncTime=new Date();
+      try{localStorage.setItem('jetiq_last_fb_sync',_lastSyncTime.toISOString());}catch(e){}
+    }
+  },2000);
+}
 const _CLOUD_SVG=`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>`;
 function _fbUpdateAuthUI(user){
-  const btn=document.getElementById('fbAuthBtn');if(!btn)return;
-  const dot=document.getElementById('fbOnlineDot');
-  const lbl=document.getElementById('fbStatusLabel');
+  const icon=document.getElementById('fbSyncIcon');
+  const title=document.getElementById('fbSyncTitle');
+  const desc=document.getElementById('fbSyncDesc');
+  if(!icon)return;
   if(user){
-    const avatar=user.photoURL
-      ?`<img src="${user.photoURL}" style="width:22px;height:22px;border-radius:50%;object-fit:cover;pointer-events:none;" referrerpolicy="no-referrer">`
-      :`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
-    btn.innerHTML=avatar+`<span id="fbOnlineDot" style="position:absolute;top:2px;right:2px;width:7px;height:7px;border-radius:50%;background:var(--green);border:1.5px solid var(--bg);pointer-events:none;"></span>`;
-    btn.title=`${user.displayName||user.email} — tap to sign out`;
-    btn.style.color='var(--green)';
-    if(lbl){const name=user.displayName||user.email||'';lbl.textContent='● '+(name.split(' ')[0]||name);lbl.style.display='block';}
+    const initial=(user.email||'?').charAt(0).toUpperCase();
+    icon.innerHTML=`<div style="width:22px;height:22px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;">${initial}</div>`;
+    icon.style.background='var(--green-soft)';
+    if(title){title.textContent=user.email||'Signed In';title.style.color='var(--green)';}
+    if(desc)desc.textContent='● Connected — tap to push / pull / sign out';
   }else{
-    btn.innerHTML=_CLOUD_SVG;
-    btn.title='Sign in with Google to sync data';
-    btn.style.color='';
-    if(lbl){lbl.style.display='none';lbl.textContent='';}
+    icon.innerHTML=`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>`;
+    icon.style.background='var(--accent-soft)';
+    if(title){title.textContent='Sign In to Sync';title.style.color='';}
+    if(desc)desc.textContent='Backup and sync data across devices';
   }
 }
 window._fbUpdateAuthUI=_fbUpdateAuthUI;
@@ -3606,10 +3641,84 @@ window._fbLoadCloud=async function(){
   toast(localChanged?'Synced ✓':'Already up to date ✓');
 };
 function fbToggleAuth(){
-  if(window._fbCurrentUser){if(window._fbSignOut)window._fbSignOut();}
-  else if(window._fbSignIn){window._fbSignIn();}
-  else if(window._fbOffline){toast('No internet — sync unavailable offline','err');}
-  else{toast('Supabase not configured — fill in _SB_URL and _SB_ANON','err');}
+  if(window._fbCurrentUser){_fbOpenSyncPanel();}
+  else{
+    document.getElementById('syncSheetBody').innerHTML=`<h3>Sync with Cloud</h3><p style="font-size:13px;color:var(--dim);margin:10px 0 16px;line-height:1.5">Enter your email — we'll send a one-time sign-in link. No password needed.</p><div class="field"><label>Email</label><input id="sync-email" type="email" placeholder="you@example.com" inputmode="email" autocomplete="email"/></div><div class="sheet-actions"><button class="btn-full btn-cancel" onclick="closeSheet('syncSheet')">Cancel</button><button class="btn-full btn-confirm" id="syncSendBtn" onclick="fbSendMagicLink()">Send Link →</button></div>`;
+    openSheet('syncSheet');
+    setTimeout(()=>document.getElementById('sync-email')?.focus(),300);
+  }
+}
+function _fbOpenSyncPanel(){
+  const u=window._fbCurrentUser;
+  const email=u?.email||'';
+  const initial=(email.charAt(0)||'?').toUpperCase();
+  const syncAge=_fmtSyncAge(_lastSyncTime);
+  document.getElementById('syncSheetBody').innerHTML=`
+    <h3>Cloud Sync</h3>
+    <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--green-soft);border:1px solid rgba(74,222,128,.3);border-radius:10px;margin-bottom:14px;">
+      <div style="width:38px;height:38px;border-radius:50%;background:var(--accent-soft);border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:var(--accent);flex-shrink:0;">${esc(initial)}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(email)}</div>
+        <div style="font-size:11px;color:var(--green);font-weight:600;margin-top:2px;">● Connected · Last sync: <span id="syncAgeLabel">${esc(syncAge)}</span></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
+      <button id="syncPushBtn" class="btn-full btn-confirm" onclick="fbManualPush()" style="display:flex;align-items:center;justify-content:center;gap:8px;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/><path d="M5 21h14"/></svg>
+        Push to Cloud
+      </button>
+      <button id="syncPullBtn" class="btn-full btn-cancel" onclick="fbManualPull()" style="display:flex;align-items:center;justify-content:center;gap:8px;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 16 12 21 17 16"/><line x1="12" y1="21" x2="12" y2="9"/><path d="M5 3h14"/></svg>
+        Pull from Cloud
+      </button>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;"><div style="flex:1;height:1px;background:var(--border);"></div><div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--muted);">Account</div><div style="flex:1;height:1px;background:var(--border);"></div></div>
+    <button class="btn-full" style="background:transparent;border:1px solid var(--red);color:var(--red);padding:12px;border-radius:12px;font-size:14px;font-weight:700;" onclick="fbPanelSignOut()">Sign Out</button>`;
+  openSheet('syncSheet');
+}
+async function fbManualPush(){
+  if(!window._fbCurrentUser){toast('Not signed in','err');return;}
+  const btn=document.getElementById('syncPushBtn');
+  if(btn){btn.innerHTML='Pushing…';btn.disabled=true;}
+  try{
+    await window._fbSave(data,categories);
+    _lastSyncTime=new Date();
+    try{localStorage.setItem('jetiq_last_fb_sync',_lastSyncTime.toISOString());}catch(e){}
+    const lbl=document.getElementById('syncAgeLabel');
+    if(lbl)lbl.textContent='Just now';
+    toast('Pushed to cloud ✓');
+  }catch(e){toast('Push failed','err');}
+  if(btn){btn.innerHTML=`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/><path d="M5 21h14"/></svg> Push to Cloud`;btn.disabled=false;}
+}
+async function fbManualPull(){
+  if(!window._fbCurrentUser){toast('Not signed in','err');return;}
+  const btn=document.getElementById('syncPullBtn');
+  if(btn){btn.innerHTML='Pulling…';btn.disabled=true;}
+  try{
+    await window._fbLoadCloud();
+  }catch(e){toast('Pull failed','err');}
+  if(btn){btn.innerHTML=`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 16 12 21 17 16"/><line x1="12" y1="21" x2="12" y2="9"/><path d="M5 3h14"/></svg> Pull from Cloud`;btn.disabled=false;}
+}
+function fbPanelSignOut(){
+  closeSheet('syncSheet');
+  if(window._fbSignOut)window._fbSignOut();
+}
+async function fbSendMagicLink(){
+  const email=(document.getElementById('sync-email')?.value||'').trim();
+  if(!email||!email.includes('@')){toast('Enter a valid email','err');return;}
+  const btn=document.getElementById('syncSendBtn');
+  if(btn){btn.textContent='Sending…';btn.disabled=true;}
+  if(window._fbSendLink){
+    const ok=await window._fbSendLink(email);
+    if(ok){
+      document.getElementById('syncSheetBody').innerHTML=`<div style="text-align:center;padding:8px 0 4px;"><div style="font-size:42px;margin-bottom:14px;">📧</div><div style="font-size:17px;font-weight:800;margin-bottom:8px;letter-spacing:-.3px;">Check your email</div><div style="font-size:13px;color:var(--dim);line-height:1.6;margin-bottom:20px;">A sign-in link was sent to<br><strong style="color:var(--text)">${esc(email)}</strong><br><br>Tap the link to sign in. Expires in 1 hour.</div><button class="btn-full btn-cancel" onclick="closeSheet('syncSheet')">Close</button></div>`;
+    }else{
+      if(btn){btn.textContent='Send Link →';btn.disabled=false;}
+    }
+  }else{
+    toast('Supabase not configured','err');
+    if(btn){btn.textContent='Send Link →';btn.disabled=false;}
+  }
 }
 
 const _saved=loadData();
@@ -3810,10 +3919,21 @@ if (_SB_URL === 'YOUR_SUPABASE_URL') {
     }
   });
 
-  window._fbSignIn = () => _sb.auth.signInWithOAuth({
-    provider: 'google',
-    options:  { redirectTo: window.location.href }
-  });
+  window._fbSendLink = async (email) => {
+    try {
+      const { error } = await _sb.auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: window.location.href }
+      });
+      if (error) throw error;
+      return true;
+    } catch(e) {
+      console.error('[ExQ-SB] magic link error', e);
+      const msg = e?.message || String(e) || 'Unknown error';
+      window.toast?.('Send failed: ' + msg, 'err');
+      return false;
+    }
+  };
 
   window._fbSignOut = async () => {
     await _sb.auth.signOut();
