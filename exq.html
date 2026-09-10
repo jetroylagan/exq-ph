@@ -2851,7 +2851,7 @@ async function doBackupJSON(method){
   const fname='ExQPH_Backup_'+new Date().toISOString().slice(0,10)+'.json';
   closeSheet('backupSheet');
   if(method==='clipboard'){
-    try{await navigator.clipboard.writeText(json);localStorage.setItem('jetiq_last_backup',new Date().toISOString());checkBackupReminder();toast('Copied! Paste into Notes or Drive ✓');}
+    try{await navigator.clipboard.writeText(json);_markBackupDone();toast('Copied! Paste into Notes or Drive ✓');}
     catch(e){toast('Clipboard failed','err');}
     return;
   }
@@ -2859,7 +2859,7 @@ async function doBackupJSON(method){
     const subject=encodeURIComponent('ExQ-PH Backup '+new Date().toISOString().slice(0,10));
     const body=encodeURIComponent('ExQ-PH Backup\n\n'+json);
     window.location.href='mailto:?subject='+subject+'&body='+body;
-    localStorage.setItem('jetiq_last_backup',new Date().toISOString());checkBackupReminder();toast('Opening email app...');
+    _markBackupDone();toast('Opening email app...');
     return;
   }
   if(method==='download'){
@@ -2868,12 +2868,12 @@ async function doBackupJSON(method){
       const file=new File([blob],fname,{type:'application/json'});
       if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
         navigator.share({title:'ExQ-PH Backup',text:'ExQ-PH Finance Backup',files:[file]})
-          .then(()=>{localStorage.setItem('jetiq_last_backup',new Date().toISOString());checkBackupReminder();toast('Backup shared ✓');})
+          .then(()=>{_markBackupDone();toast('Backup shared ✓');})
           .catch(e=>{if(e.name!=='AbortError')_downloadJsonBlob(blob,fname);});
         return;
       }
       _downloadJsonBlob(blob,fname);
-      localStorage.setItem('jetiq_last_backup',new Date().toISOString());checkBackupReminder();
+      _markBackupDone();
     }catch(e){toast('Download failed','err');}
   }
 }
@@ -3551,15 +3551,20 @@ function toggleHideAmounts(){
 }
 
 /* ── FIREBASE BRIDGE ──────────────────────── */
-let _fbSyncing=false,_fbSaveTimer=null,_lastSyncTime=null;
+let _fbSyncing=false,_fbSaveTimer=null,_lastSyncTime=null,_lastBackupTime=null;
 try{const s=localStorage.getItem('jetiq_last_fb_sync');if(s)_lastSyncTime=new Date(s);}catch(e){}
-function _fmtSyncAge(d){
+try{const s=localStorage.getItem('jetiq_last_backup');if(s)_lastBackupTime=new Date(s);}catch(e){}
+function _fmtPHT(d){
   if(!d)return'Never';
-  const s=Math.floor((Date.now()-d.getTime())/1000);
-  if(s<60)return'Just now';
-  if(s<3600)return Math.floor(s/60)+'m ago';
-  if(s<86400)return Math.floor(s/3600)+'h ago';
-  return d.toLocaleDateString();
+  return new Intl.DateTimeFormat('en-PH',{timeZone:'Asia/Manila',year:'numeric',month:'short',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true}).format(d)+' PHT';
+}
+function _markBackupDone(){
+  _lastBackupTime=new Date();
+  try{localStorage.setItem('jetiq_last_backup',_lastBackupTime.toISOString());}catch(e){}
+  checkBackupReminder();
+  window._fbSaveBackupTime?.();
+  const lbl=document.getElementById('backupAgeLabel');
+  if(lbl)lbl.textContent=_fmtPHT(_lastBackupTime);
 }
 function _debouncedFbSave(){
   clearTimeout(_fbSaveTimer);
@@ -3603,7 +3608,9 @@ window._fbLoadCloud=async function(){
     return;
   }
   // Cloud has data — it is always the source of truth on pull
-  const{fbData,fbCategories}=result;
+  const{fbData,fbCategories,fbSettings}=result;
+  if(fbSettings?.lastSyncedAt){_lastSyncTime=new Date(fbSettings.lastSyncedAt);try{localStorage.setItem('jetiq_last_fb_sync',_lastSyncTime.toISOString());}catch(e){}}
+  if(fbSettings?.lastBackupAt){_lastBackupTime=new Date(fbSettings.lastBackupAt);try{localStorage.setItem('jetiq_last_backup',_lastBackupTime.toISOString());}catch(e){}}
   _fbSyncing=true;
   try{
     if(fbData&&typeof fbData==='object'&&Object.keys(fbData).length){
@@ -3636,14 +3643,15 @@ function _fbOpenSyncPanel(){
   const u=window._fbCurrentUser;
   const email=u?.email||'';
   const initial=(email.charAt(0)||'?').toUpperCase();
-  const syncAge=_fmtSyncAge(_lastSyncTime);
   document.getElementById('syncSheetBody').innerHTML=`
     <h3>Cloud Sync</h3>
     <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--green-soft);border:1px solid rgba(74,222,128,.3);border-radius:10px;margin-bottom:14px;">
       <div style="width:38px;height:38px;border-radius:50%;background:var(--accent-soft);border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:var(--accent);flex-shrink:0;">${esc(initial)}</div>
       <div style="flex:1;min-width:0;">
         <div style="font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(email)}</div>
-        <div style="font-size:11px;color:var(--green);font-weight:600;margin-top:2px;">● Connected · Last sync: <span id="syncAgeLabel">${esc(syncAge)}</span></div>
+        <div style="font-size:11px;color:var(--green);font-weight:600;margin-top:2px;">● Connected</div>
+        <div style="font-size:10px;color:var(--dim);margin-top:3px;">Last sync: <span id="syncAgeLabel">${_fmtPHT(_lastSyncTime)}</span></div>
+        <div style="font-size:10px;color:var(--dim);margin-top:1px;">Last backup: <span id="backupAgeLabel">${_fmtPHT(_lastBackupTime)}</span></div>
       </div>
     </div>
     <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
@@ -3669,7 +3677,7 @@ async function fbManualPush(){
     _lastSyncTime=new Date();
     try{localStorage.setItem('jetiq_last_fb_sync',_lastSyncTime.toISOString());}catch(e){}
     const lbl=document.getElementById('syncAgeLabel');
-    if(lbl)lbl.textContent='Just now';
+    if(lbl)lbl.textContent=_fmtPHT(_lastSyncTime);
     toast('Pushed to cloud ✓');
   }catch(e){toast('Push failed','err');}
   if(btn){btn.innerHTML=`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/><path d="M5 21h14"/></svg> Push to Cloud`;btn.disabled=false;}
