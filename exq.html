@@ -1055,7 +1055,7 @@ input[type=file]{display:none;}
       <div class="nav-label">Trends</div>
     </button>
     <button class="nav-item" data-screen="data" onclick="switchTab('data')">
-      <div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></div>
+      <div class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div>
       <div class="nav-label">More</div>
     </button>
   </div>
@@ -3595,47 +3595,34 @@ window._fbLoadCloud=async function(){
   if(!window._fbLoad)return;
   const result=await window._fbLoad();
   if(!result){
+    // Nothing in cloud yet — push local data up as the initial seed
     if(window._fbSave&&Object.keys(data).length){
       await window._fbSave(data,categories);
       toast('Local data uploaded to cloud ✓');
     }else{toast('Signed in ✓ — changes will sync automatically');}
     return;
   }
+  // Cloud has data — it is always the source of truth on pull
   const{fbData,fbCategories}=result;
-  let localChanged=false;
   _fbSyncing=true;
   try{
-    // Per-month timestamp merge: each month keeps whichever copy is newer
-    if(fbData&&typeof fbData==='object'){
+    if(fbData&&typeof fbData==='object'&&Object.keys(fbData).length){
+      data={};
       for(const[year,cloudMonths]of Object.entries(fbData)){
-        if(!data[year]){data[year]=[];localChanged=true;}
-        for(const cm of cloudMonths){
-          const li=data[year].findIndex(m=>m.month===cm.month);
-          if(li===-1){data[year].push(cm);localChanged=true;}
-          else{
-            const cloudT=new Date(cm.updated_at||0).getTime();
-            const localT=new Date(data[year][li].updated_at||0).getTime();
-            if(cloudT>localT){data[year][li]=cm;localChanged=true;}
-            // else local is newer — keep as-is, will upload in _fbSave below
-          }
-        }
+        data[year]=cloudMonths;
         data[year].sort((a,b)=>MONTHS.indexOf(a.month)-MONTHS.indexOf(b.month));
       }
-      if(localChanged){migrateItemNames();migrateStatuses();saveData();}
+      migrateItemNames();migrateStatuses();saveData();
     }
     if(fbCategories&&Array.isArray(fbCategories)&&fbCategories.length){
-      categories=fbCategories;saveCategories();localChanged=true;
+      categories=fbCategories;saveCategories();
     }
-    if(localChanged){
-      migrateCategories();initSelect();refreshCategorySelects();
-      _syncHideBtn();renderOverview();
-      if(activeScreen==='months')renderMonths();
-      if(activeScreen==='summary')renderSummary();
-    }
+    migrateCategories();initSelect();refreshCategorySelects();
+    _syncHideBtn();renderOverview();
+    if(activeScreen==='months')renderMonths();
+    if(activeScreen==='summary')renderSummary();
   }finally{_fbSyncing=false;}
-  // Push merged state back (uploads locally-newer months + deletions)
-  if(window._fbSave)await window._fbSave(data,categories);
-  toast(localChanged?'Synced ✓':'Already up to date ✓');
+  toast('Synced ✓');
 };
 function fbToggleAuth(){
   if(window._fbCurrentUser){_fbOpenSyncPanel();}
