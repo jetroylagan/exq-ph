@@ -3947,7 +3947,8 @@ if (_SB_URL === 'YOUR_SUPABASE_URL') {
       for (const [year, months] of Object.entries(data)) {
         for (const m of months) {
           monthRows.push({
-            year:          parseInt(year),
+            user_id:       user.id,
+            year:          String(year),
             month:         m.month,
             projected_mid: m.projectedNetPayMid || 0,
             projected_end: m.projectedNetPayEnd || 0,
@@ -3960,15 +3961,16 @@ if (_SB_URL === 'YOUR_SUPABASE_URL') {
       // Upsert first (safe), then delete orphans so local deletions propagate
       if (monthRows.length) {
         const { error } = await _sb.from('exq_months')
-          .upsert(monthRows, { onConflict: 'year,month' });
+          .upsert(monthRows, { onConflict: 'user_id,year,month' });
         if (error) throw error;
       }
-      const localMonthKeys = new Set(monthRows.map(r => `${parseInt(r.year)}|${r.month}`));
+      const localMonthKeys = new Set(monthRows.map(r => `${r.year}|${r.month}`));
       const { data: cloudMonths } = await _sb.from('exq_months').select('id,year,month');
-      const toDelMonths = (cloudMonths || []).filter(m => !localMonthKeys.has(`${parseInt(m.year)}|${m.month}`));
+      const toDelMonths = (cloudMonths || []).filter(m => !localMonthKeys.has(`${String(m.year)}|${m.month}`));
       if (toDelMonths.length) await _sb.from('exq_months').delete().in('id', toDelMonths.map(m => m.id));
 
       const catRows = categories.map((c, i) => ({
+        user_id:    user.id,
         name:       c.name,
         color:      c.color,
         icon:       c.icon  || 'info',
@@ -3977,7 +3979,7 @@ if (_SB_URL === 'YOUR_SUPABASE_URL') {
       }));
       if (catRows.length) {
         const { error } = await _sb.from('exq_categories')
-          .upsert(catRows, { onConflict: 'name' });
+          .upsert(catRows, { onConflict: 'user_id,name' });
         if (error) throw error;
       }
       const localCatNames = new Set(catRows.map(r => r.name));
