@@ -3986,6 +3986,11 @@ if (_SB_URL === 'YOUR_SUPABASE_URL') {
       const { data: cloudCats } = await _sb.from('exq_categories').select('id,name');
       const toDelCats = (cloudCats || []).filter(c => !localCatNames.has(c.name));
       if (toDelCats.length) await _sb.from('exq_categories').delete().in('id', toDelCats.map(c => c.id));
+
+      await _sb.from('exq_settings').upsert(
+        { user_id: user.id, last_synced_at: new Date().toISOString() },
+        { onConflict: 'user_id' }
+      );
     } catch (e) {
       console.error('[ExQ-SB] save error', e);
       const msg = e?.message || String(e) || 'Unknown error';
@@ -3993,13 +3998,23 @@ if (_SB_URL === 'YOUR_SUPABASE_URL') {
     }
   };
 
+  window._fbSaveBackupTime = async () => {
+    const { data: { user } } = await _sb.auth.getUser();
+    if (!user) return;
+    await _sb.from('exq_settings').upsert(
+      { user_id: user.id, last_backup_at: new Date().toISOString() },
+      { onConflict: 'user_id' }
+    );
+  };
+
   window._fbLoad = async () => {
     const { data: { user } } = await _sb.auth.getUser();
     if (!user) return null;
     try {
-      const [{ data: months, error: me }, { data: cats, error: ce }] = await Promise.all([
+      const [{ data: months, error: me }, { data: cats, error: ce }, { data: settings }] = await Promise.all([
         _sb.from('exq_months').select('*'),
-        _sb.from('exq_categories').select('*').order('sort_order')
+        _sb.from('exq_categories').select('*').order('sort_order'),
+        _sb.from('exq_settings').select('*').eq('user_id', user.id).maybeSingle()
       ]);
       if (me) throw me;
       if (ce) throw ce;
@@ -4030,7 +4045,12 @@ if (_SB_URL === 'YOUR_SUPABASE_URL') {
         items: c.items || []
       }));
 
-      return { fbData, fbCategories };
+      const fbSettings = {
+        lastSyncedAt: settings?.last_synced_at || null,
+        lastBackupAt: settings?.last_backup_at || null
+      };
+
+      return { fbData, fbCategories, fbSettings };
     } catch (e) { console.error('[ExQ-SB] load error', e); return null; }
   };
 }} // end if(createClient) + else block
